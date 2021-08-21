@@ -1,0 +1,19 @@
+version: '3.5'
+services:  
+  web-api:
+    image: go-api:latest
+    container_name: docker-compose-go-api
+    # volumes:
+    #   - ./upload:/root/data-upload  # กรณีเขียน upload file 
+    ports:
+      - 8080:8080
+    networks:
+      - backend         
+networks:
+  backend:       
+# volumes:
+#   elasticsearch-data:
+#   mariadb-data:
+
+# parth /var/lib/docker/volumes
+# comment press ctrl+/

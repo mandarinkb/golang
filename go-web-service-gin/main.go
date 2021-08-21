@@ -1,9 +1,14 @@
 package main
 
 import (
+	"errors"
 	"fmt"
+	"log"
 	"net/http"
+	"os"
+	"path/filepath"
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -24,7 +29,11 @@ var users = []User{
 
 var user = User{USER_ID: 1, USERNAME: "test", PASSWORD: "test-password", ROLE: "admin"}
 
+const FILE_PATH = "data-upload"
+
 func readUsers(c *gin.Context) {
+	// query := c.Query("q") // shortcut for c.Request.URL.Query().Get("q")
+	// fmt.Println(query)
 	c.IndentedJSON(http.StatusOK, users) // return ค่า http status และค่า json obj หรือ json array ออกให้เลย
 }
 
@@ -145,12 +154,66 @@ func deleteUsers(c *gin.Context) {
 	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "user not found"})
 }
 
+// upload file
+func uploadFile(c *gin.Context) {
+	// Multipart form
+	form, _ := c.MultipartForm()
+	files := form.File["file"]
+
+	for _, file := range files {
+		log.Println("upload file => ", file.Filename)
+		//path := "data-upload"
+		if _, err := os.Stat(FILE_PATH); errors.Is(err, os.ErrNotExist) {
+			err := os.Mkdir(FILE_PATH, os.ModePerm)
+			if err != nil {
+				log.Println(err)
+			}
+		}
+
+		targetPath := filepath.Join("./", FILE_PATH, "/", file.Filename)
+		//c.SaveUploadedFile(file, "./"+path+"/"+file.Filename)
+		c.SaveUploadedFile(file, targetPath)
+	}
+	c.String(http.StatusOK, fmt.Sprintf("%d files uploaded!", len(files)))
+}
+
+func downloadFile(c *gin.Context) {
+	fileName := c.Param("file")
+	targetPath := filepath.Join(FILE_PATH, "/", fileName)
+
+	//ตรวจสอบ filename เพื่อป้องกันการโจมตีจาก user side
+	if !strings.HasPrefix(filepath.Clean(targetPath), FILE_PATH+"/") {
+		c.String(403, "Look like you attacking me")
+		return
+	}
+
+	c.Header("Content-Description", "File Transfer")
+	c.Header("Content-Transfer-Encoding", "binary")
+	c.Header("Content-Disposition", "attachment; filename="+fileName)
+	c.Header("Content-Type", "application/octet-stream")
+	//c.File("./data-upload/" + fileName)
+	c.File(targetPath)
+}
 func main() {
 	router := gin.Default()
+	// Simple grouping routes: v1
+	// v1 := router.Group("/v1")
+	// {
+	// 	v1.GET("/users", readUsers)
+	// 	v1.GET("/users/:id", readUserByID)
+	// 	v1.POST("/users", createUsers)
+	// 	v1.PUT("/users/:id", updateUsers)
+	// 	v1.DELETE("/users/:id", deleteUsers)
+	// 	v1.POST("/upload", uploadFile)
+	// }
+
 	router.GET("/users", readUsers)
 	router.GET("/users/:id", readUserByID)
 	router.POST("/users", createUsers)
 	router.PUT("/users/:id", updateUsers)
 	router.DELETE("/users/:id", deleteUsers)
-	router.Run("localhost:8080")
+	router.POST("/upload", uploadFile)
+	router.Static("/image", "./data-upload") //  จะ return folder ที่เก็บไฟล์ให้ ตอนเรียกอ้างอิงไฟล์ได้เลย http://127.0.0.1:8080/image/demo.png
+	router.GET("/download/:file", downloadFile)
+	router.Run(":8080")
 }
