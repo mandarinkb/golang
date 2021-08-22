@@ -1,4 +1,4 @@
-module web-service-gin
+module upload-download-file
 
 go 1.16
 

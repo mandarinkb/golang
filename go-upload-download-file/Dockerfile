@@ -7,7 +7,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o app .
 
 FROM alpine:latest  
 # RUN apk --no-cache add ca-certificates
-# RUN mkdir /root/data-upload
+RUN mkdir /root/data-upload
 WORKDIR /root/
 COPY --from=0 /xxx/app .
 CMD ["./app"]  
