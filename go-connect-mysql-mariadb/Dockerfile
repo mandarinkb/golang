@@ -1,6 +1,6 @@
 FROM golang:1.16.6-alpine
-
-RUN apk update && apk add gcc git && apk add libc-dev
+RUN apk update 
+# && apk add gcc git 
 WORKDIR /xxx
 COPY . .
 RUN go build ./...
@@ -11,6 +11,3 @@ RUN apk --no-cache add ca-certificates
 WORKDIR /root/
 COPY --from=0 /xxx/app .
 CMD ["./app"]  
-
-
-#sudo docker build -t go-api-3 -f Dockerfile.multistage .
