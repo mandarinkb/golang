@@ -11,14 +11,14 @@ import (
 )
 
 type User struct {
-	USER_ID   int    `json:"user_id"`
-	USERNAME  string `json:"username"`
-	PASSWORD  string `json:"password"`
-	USER_ROLE string `json:"user_role"`
+	USER_ID   int    `db:"USER_ID"`
+	USERNAME  string `db:"USERNAME"`
+	PASSWORD  string `db:"PASSWORD"`
+	USER_ROLE string `db:"USER_ROLE"`
 }
 
 func main() {
-	// ใช้ sqlx library
+	//===== ใช้ sqlx library =====//
 	// mariadb ใช้ Library ของ mysql ในการเชื่อมต่อ
 	// db, _ := sqlx.Connect("mysql", "root:mandarinkb@tcp(127.0.0.1)/TEST_DB?charset=utf8")
 
@@ -28,10 +28,10 @@ func main() {
 	// 	USER_ROLE: "admin",
 	// }
 	// upUser := User{
-	// 	USER_ID:   1,
-	// 	USERNAME:  "aaa",
-	// 	PASSWORD:  "bbb",
-	// 	USER_ROLE: "ccc",
+	// 	USER_ID:   10,
+	// 	USERNAME:  "ssssssss",
+	// 	PASSWORD:  "dddddddd",
+	// 	USER_ROLE: "ffffffff",
 	// }
 
 	// err := createX(db, newUser)
@@ -44,21 +44,19 @@ func main() {
 	// 	fmt.Println(err)
 	// }
 
-	// err := deleteX(db, 6)
+	// err := deleteX(db, 10)
 	// if err != nil {
 	// 	fmt.Println(err)
 	// }
 
-	// user, err := readByIdX(db, 5)
+	// users, err := readByIdX(db, 5)
 
 	// users, err := readX(db)
 	// if err != nil {
 	// 	fmt.Println(err)
 	// }
-	// j, _ := json.Marshal(users)
-	// fmt.Println(string(j))
 
-	// mariadb ใช้ Library ของ mysql ในการเชื่อมต่อ
+	//===== ใช้ build-in library =====//
 	db, _ := sql.Open("mysql", "root:mandarinkb@tcp(127.0.0.1)/TEST_DB?charset=utf8")
 
 	// err := create(db, newUser)
@@ -98,9 +96,9 @@ func readX(db *sqlx.DB) ([]User, error) {
 	}
 
 	users := []User{}
-	query := "SELECT user_id, username, password, user_role FROM USERS" // ชื่อ filed ใน database ต้องใส่เป็นตัวเล็ก
-	err = db.Select(&users, query)                                      // และ ชื่อ table ต้องใส่เป็นตัวใหญ่ตามที่ตั้งค่าไว้ใน database
-	if err != nil {                                                     // มิฉะนั้นจะ error
+	query := "SELECT USER_ID, USERNAME, PASSWORD, USER_ROLE FROM USERS"
+	err = db.Select(&users, query)
+	if err != nil {
 		return nil, err
 	}
 	return users, nil
@@ -114,7 +112,7 @@ func readByIdX(db *sqlx.DB, id int) (*User, error) {
 	}
 
 	user := User{}
-	query := "SELECT user_id, username, password, user_role FROM USERS WHERE user_id=?" //mysql ใช้ ? mssql ใช้ @id
+	query := "SELECT USER_ID, USERNAME,PASSWORD, USER_ROLE FROM USERS WHERE USER_ID=?" //mysql ใช้ ? mssql ใช้ @id
 	err = db.Get(&user, query, id)
 	if err != nil {
 		return nil, err
@@ -134,7 +132,7 @@ func createX(db *sqlx.DB, user User) error {
 		return err
 	}
 
-	query := "INSERT INTO USERS (username,password,user_role) VALUES (?,?,?)"
+	query := "INSERT INTO USERS (USERNAME,PASSWORD,USER_ROLE) VALUES (?,?,?)"
 	result, err := tx.Exec(query, user.USERNAME, user.PASSWORD, user.USER_ROLE)
 	if err != nil {
 		return err
