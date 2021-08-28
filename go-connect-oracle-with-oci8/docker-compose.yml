@@ -1,0 +1,33 @@
+version: '3.5'
+services:    
+  oracle-10g-db:
+    image: sandersliu/docker-oracle-xe-10g:latest
+    container_name: docker-compose-oracle-10g
+    restart: always
+    volumes: 
+      - oracle-10g-data:/usr/lib/oracle
+    ports:
+      - 1521:1521
+    networks:
+      - backend  
+
+  # oracle-11g-db:
+  #   image: oracleinanutshell/oracle-xe-11g:latest
+  #   container_name: docker-compose-oracle-11g
+  #   restart: always
+  #   volumes: 
+  #     - oracle-11g-data:/u01/app/oracle
+  #   ports:
+  #     - 1521:1521
+  #     - 5500:5500
+  #   networks:
+  #     - backend 
+
+networks:
+  backend:       
+volumes:
+  oracle-10g-data:
+  oracle-11g-data:
+
+# parth /var/lib/docker/volumes
+# comment press ctrl+/
