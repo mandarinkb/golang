@@ -1,0 +1,24 @@
+version: '3.5'
+services:    
+  mssql-db:
+    image: mcr.microsoft.com/mssql/server:2019-CU12-ubuntu-18.04
+    container_name: docker-compose-mssql-express
+    restart: always
+    volumes: 
+      - mssql-data:/var/opt/mssql 
+    environment:
+      - MSSQL_PID=Express
+      - ACCEPT_EULA=Y
+      - MSSQL_DB=master
+      - SA_PASSWORD=P@ssw0rd
+    ports:
+      - 1433:1433
+    networks:
+      - backend  
+networks:
+  backend: 
+volumes:
+   mssql-data: 
+
+# parth /var/lib/docker/volumes
+# comment press ctrl+/
