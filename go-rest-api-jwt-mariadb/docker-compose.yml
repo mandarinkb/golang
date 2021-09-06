@@ -1,0 +1,20 @@
+version: '3.5'
+services:    
+  mariadb:
+    image: mariadb:10.3
+    container_name: docker-compose-mariadb
+    restart: always
+    volumes: 
+      - mariadb-data:/var/lib/mysql
+    environment: 
+      - MYSQL_ROOT_PASSWORD=mandarinkb
+    ports:
+      - 3306:3306
+    networks:
+      - backend  
+networks:
+  backend:       
+volumes:
+  mariadb-data:
+
+# parth /var/lib/docker/volumes
