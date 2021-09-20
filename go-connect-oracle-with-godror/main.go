@@ -30,6 +30,26 @@ func main() {
 		fmt.Println(err)
 		return
 	}
+	//========== for test ru ==========//
+	// db, err := sqlx.Open("godror", `user="scenter01" password="scenter01new" connectString="10.2.1.98:1571/RUBRAM" timezone=local`)
+
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	return
+	// }
+	// err = db.Ping()
+	// if err != nil {
+	// 	fmt.Println(err)
+	// } else {
+	// 	fmt.Println("connect success")
+	// }
+	// user, err := GetAll(db)
+	// if err != nil {
+	// 	fmt.Println(err)
+	// }
+	// j, _ := json.Marshal(user)
+	// fmt.Println(string(j))
+	//========== end test ru ==========//
 
 	// addUser := User{
 	// 	USER_ID:   6,
@@ -91,6 +111,34 @@ func main() {
 	fmt.Println(string(j))
 	defer db.Close()
 }
+
+//========== for test ru ==========//
+// type User struct {
+// 	UserId            string `db:"USER_ID"`
+// 	UserName          string `db:"USERNAME"`
+// 	UserRoleType      string `db:"ROLE_TYPE"`
+// 	UserUpdateDate    string `db:"UPDATE_DATE"`
+// 	UserActivity      string `db:"ACTIVATED"`
+// 	UserFacultyNumber string `db:"FACULTY_NO"`
+// }
+
+// func GetAll(db *sqlx.DB) ([]User, error) {
+
+// 	// ทำการสร้าง instant ค่าเป็น slide User{} ที่ได้สร้างไว้ที่  (user.go file) type User struct
+// 	users := []User{}
+// 	query := "SELECT USER_ID,USERNAME,ROLE_TYPE,TO_CHAR(UPDATE_DATE,'ddMONyyyy', 'NLS_CALENDAR=''THAI BUDDHA'' NLS_DATE_LANGUAGE=THAI')UPDATE_DATE,ACTIVATED,FACULTY_NO FROM SCENTER01.SV_USERS ORDER BY USER_ID"
+
+// 	// u.db.Select เป็นการใช้ attribute ของ type userRepositoryDB struct { db *sqlx.DB }
+// 	// ซึ่งเป็นการใช้คุณสมบัติ คำสั่ง query ต่างๆของตัวแปร db ที่มี Data type เป็น *sqlx.DB
+// 	err := db.Select(&users, query)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+
+// 	return users, nil
+
+// }
+//========== end test ru ==========//
 
 //********** sqlx library **********//
 func readX(db *sqlx.DB) ([]User, error) {

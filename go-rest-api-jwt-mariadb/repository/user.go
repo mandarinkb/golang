@@ -1,10 +1,10 @@
 package repository
 
 type User struct {
-	USER_ID   int    `db:"USER_ID"`
-	USERNAME  string `db:"USERNAME"`
-	PASSWORD  string `db:"PASSWORD"`
-	USER_ROLE string `db:"USER_ROLE"`
+	UserId   int    `db:"USER_ID"`
+	Username string `db:"USERNAME"`
+	Password string `db:"PASSWORD"`
+	UserRole string `db:"USER_ROLE"`
 }
 type UserRepository interface {
 	Read() ([]User, error)

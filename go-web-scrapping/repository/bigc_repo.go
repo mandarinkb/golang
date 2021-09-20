@@ -1,7 +1,9 @@
 package repository
 
 import (
+	"database/sql"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -10,6 +12,7 @@ import (
 	"time"
 	"webscrapping/util"
 
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/tidwall/gjson"
 )
 
@@ -79,10 +82,9 @@ func (Product) Bigc() ([]Product, error) {
 					Image:         bigcProducts[i].Image,
 					Icon:          "https://www.bigc.co.th/_nuxt/img/CI-Bigc-resize.108a02e.png",
 				}
-				productSlice = append(productSlice, product) //เก็บข้อมูลลง slice Product
-				// j, _ := json.Marshal(product)
-				// fmt.Println(string(j))
-				// return productSlice, nil
+				InsertToDB(product)
+				//productSlice = append(productSlice, product) //เก็บข้อมูลลง slice Product
+
 			}
 		}
 	}
@@ -171,4 +173,42 @@ func bigcApi(cateId string, pageNo string) ([]byte, error) {
 
 func lastPage(data []byte) int64 {
 	return gjson.Get(string(data), "result.lastPage").Int()
+}
+
+func InsertToDB(repo Product) error {
+	db, err := sql.Open("mysql", "root:mandarinkb@tcp(127.0.0.1)/TEST_DB?charset=utf8")
+	if err != nil {
+		fmt.Print(err)
+	}
+	err = db.Ping()
+	if err != nil {
+		return err
+	}
+
+	query := "INSERT INTO PRODUCT (TIMESTAMP,WEB_NAME,PRODUCT_NAME,CATEGORY,PRICE,ORIGINAL_PRICE,PRODUCT_URL,IMAGE,ICON) VALUES (?,?,?,?,?,?,?,?,?)"
+	result, err := db.Exec(query, repo.Timestamp,
+		repo.WebName,
+		repo.ProductName,
+		repo.Category,
+		repo.Price,
+		repo.OriginalPrice,
+		repo.ProductUrl,
+		repo.Image,
+		repo.Icon)
+	if err != nil {
+		return err
+	}
+
+	// รับค่ามาเพื่อตรวสสอบว่า insert สำเร็จหรือไม่
+	affected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	// กรณี insert ไม่สำเร็จ
+	if affected <= 0 {
+		return errors.New("cannot insert")
+	}
+
+	db.Close()
+	return nil
 }

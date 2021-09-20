@@ -2,6 +2,7 @@ package service
 
 import (
 	"github.com/mandarinkb/go-rest-api-jwt-mariadb/repository"
+	"github.com/mandarinkb/go-rest-api-jwt-mariadb/utils"
 )
 
 type userService struct {
@@ -21,9 +22,9 @@ func (s userService) Read() ([]UserResponse, error) {
 
 	for _, row := range userRepo {
 		dataRepo := UserResponse{
-			USER_ID:   row.USER_ID,
-			USERNAME:  row.USERNAME,
-			USER_ROLE: row.USER_ROLE,
+			UserId:   row.UserId,
+			Username: row.Username,
+			UserRole: row.UserRole,
 		}
 		users = append(users, dataRepo)
 	}
@@ -36,34 +37,54 @@ func (s userService) ReadById(id int) (*UserResponse, error) {
 	if err != nil {
 		return nil, err
 	}
-	user := UserResponse{
-		USER_ID:   userRepo.USER_ID,
-		USERNAME:  userRepo.USERNAME,
-		USER_ROLE: userRepo.USER_ROLE}
-
-	return &user, nil
+	// user := UserResponse{
+	// 	UserId:   userRepo.UserId,
+	// 	Username: userRepo.Username,
+	// 	UserRole: userRepo.UserRole}
+	userRes := mapDataUser(*userRepo)
+	return &userRes, nil
 }
 
-func (s userService) Create(user UserRequest) error {
+func (s userService) Create(user UserRequest) (*UserResponse, error) {
+	passwordHash, err := utils.NewBcrypt().HashPassword(user.Password)
+	if err != nil {
+		return nil, err
+	}
+	// map data from request
 	addUser := repository.User{
-		USER_ID:   user.USER_ID,
-		USERNAME:  user.USERNAME,
-		PASSWORD:  user.PASSWORD,
-		USER_ROLE: user.USER_ROLE,
+		UserId:   user.UserId,
+		Username: user.Username,
+		Password: passwordHash,
+		UserRole: user.UserRole,
 	}
-	return s.userRepo.Create(addUser)
+	userRes := mapDataUser(addUser)
+	return &userRes, s.userRepo.Create(addUser)
 }
 
-func (s userService) Update(user UserRequest) error {
-	updateUser := repository.User{
-		USER_ID:   user.USER_ID,
-		USERNAME:  user.USERNAME,
-		PASSWORD:  user.PASSWORD,
-		USER_ROLE: user.USER_ROLE,
+func (s userService) Update(user UserRequest) (*UserResponse, error) {
+	passwordHash, err := utils.NewBcrypt().HashPassword(user.Password)
+	if err != nil {
+		return nil, err
 	}
-	return s.userRepo.Update(updateUser)
+	// map data from request
+	updateUser := repository.User{
+		UserId:   user.UserId,
+		Username: user.Username,
+		Password: passwordHash,
+		UserRole: user.UserRole,
+	}
+	userRes := mapDataUser(updateUser)
+	return &userRes, s.userRepo.Update(updateUser)
 }
 
 func (s userService) Delete(id int) error {
 	return s.userRepo.Delete(id)
+}
+
+// ฟังก็ชัน map data จาก repository ไปยัง service
+func mapDataUser(userRepo repository.User) UserResponse {
+	return UserResponse{
+		UserId:   userRepo.UserId,
+		Username: userRepo.Username,
+		UserRole: userRepo.UserRole}
 }

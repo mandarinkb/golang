@@ -30,7 +30,8 @@ func (r userRepository) Read() ([]User, error) {
 	users := []User{}
 	for rows.Next() {
 		user := User{}
-		err = rows.Scan(&user.USER_ID, &user.USERNAME, &user.PASSWORD, &user.USER_ROLE) //จะเรียงตามชื่อ field ที่ query
+		//จะเรียงตามชื่อ field ที่ query
+		err = rows.Scan(&user.UserId, &user.Username, &user.Password, &user.UserRole)
 		if err != nil {
 			return nil, err
 		}
@@ -45,11 +46,12 @@ func (r userRepository) ReadById(id int) (*User, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	query := "SELECT USER_ID, USERNAME, PASSWORD, USER_ROLE FROM USERS WHERE USER_ID=?" //mysql ใช้ ?
-	row := r.db.QueryRow(query, id)                                                     //ถ้ามี ? หลายตัว ก็ใส่ พารามิเตอร์ตาม index ไปเรื่อยๆ
+	// mysql ใช้ ?
+	// ถ้ามี ? หลายตัว ก็ใส่ พารามิเตอร์ตาม index ไปเรื่อยๆ
+	query := "SELECT USER_ID, USERNAME, PASSWORD, USER_ROLE FROM USERS WHERE USER_ID=?"
+	row := r.db.QueryRow(query, id)
 	user := User{}
-	err = row.Scan(&user.USER_ID, &user.USERNAME, &user.PASSWORD, &user.USER_ROLE)
+	err = row.Scan(&user.UserId, &user.Username, &user.Password, &user.UserRole)
 	if err != nil {
 		return nil, err
 	}
@@ -63,7 +65,7 @@ func (r userRepository) Create(user User) error {
 		return err
 	}
 	query := "INSERT INTO USERS (USER_ID,USERNAME,PASSWORD,USER_ROLE) VALUES (?,?,?,?)"
-	result, err := r.db.Exec(query, user.USER_ID, user.USERNAME, user.PASSWORD, user.USER_ROLE)
+	result, err := r.db.Exec(query, user.UserId, user.Username, user.Password, user.UserRole)
 	if err != nil {
 		return err
 	}
@@ -87,7 +89,7 @@ func (r userRepository) Update(user User) error {
 		return err
 	}
 	query := "UPDATE USERS SET USERNAME=?, PASSWORD=?, USER_ROLE=? WHERE USER_ID=?"
-	result, err := r.db.Exec(query, user.USERNAME, user.PASSWORD, user.USER_ROLE, user.USER_ID)
+	result, err := r.db.Exec(query, user.Username, user.Password, user.UserRole, user.UserId)
 	if err != nil {
 		return err
 	}

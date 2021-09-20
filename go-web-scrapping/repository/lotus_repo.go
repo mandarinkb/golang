@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"database/sql"
+	"errors"
 	"fmt"
 	"strings"
 	"time"
@@ -212,6 +214,9 @@ func productDetail(url string, cate string) (Product, error) {
 			Icon:          "https://www.tescolotus.com/assets/theme2018/tl-theme/img/logo.png",
 		}
 		fmt.Println(time.Now().Format(time.RFC3339), " : ", "lotus : ", name)
+
+		InsertLotusToDB(products)
+
 	})
 	// start scraping (ไว้ล่างสุด)
 	err := c.Visit(url)
@@ -219,5 +224,44 @@ func productDetail(url string, cate string) (Product, error) {
 		fmt.Println(err)
 		//return Product{}, err
 	}
+
 	return products, nil
+}
+
+func InsertLotusToDB(repo Product) error {
+	db, err := sql.Open("mysql", "root:mandarinkb@tcp(127.0.0.1)/TEST_DB?charset=utf8")
+	if err != nil {
+		fmt.Print(err)
+	}
+	err = db.Ping()
+	if err != nil {
+		return err
+	}
+
+	query := "INSERT INTO PRODUCT (TIMESTAMP,WEB_NAME,PRODUCT_NAME,CATEGORY,PRICE,ORIGINAL_PRICE,PRODUCT_URL,IMAGE,ICON) VALUES (?,?,?,?,?,?,?,?,?)"
+	result, err := db.Exec(query, repo.Timestamp,
+		repo.WebName,
+		repo.ProductName,
+		repo.Category,
+		repo.Price,
+		repo.OriginalPrice,
+		repo.ProductUrl,
+		repo.Image,
+		repo.Icon)
+	if err != nil {
+		return err
+	}
+
+	// รับค่ามาเพื่อตรวสสอบว่า insert สำเร็จหรือไม่
+	affected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	// กรณี insert ไม่สำเร็จ
+	if affected <= 0 {
+		return errors.New("cannot insert")
+	}
+
+	db.Close()
+	return nil
 }

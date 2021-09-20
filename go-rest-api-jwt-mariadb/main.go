@@ -12,10 +12,16 @@ import (
 )
 
 func main() {
-	db, err := sql.Open("mysql", "root:mandarinkb@tcp(mariadb)/TEST_DB?charset=utf8")
+	db, err := sql.Open("mysql", "root:mandarinkb@tcp(127.0.0.1)/TEST_DB?charset=utf8")
 	if err != nil {
 		fmt.Print(err)
 	}
+	defer db.Close()
+
+	productRepo := repository.NewProductRepo(db)
+	productSrv := service.NewProductServ(productRepo)
+	productHandler := handlers.NewProductHandler(productSrv)
+
 	userRepo := repository.NewUserRepo(db)
 	userSrv := service.NewUserServ(userRepo)
 	userHandler := handlers.NewUserHandler(userSrv)
@@ -23,6 +29,7 @@ func main() {
 	// set release mode
 	// using env:   export GIN_MODE=release
 	// using code:  gin.SetMode(gin.ReleaseMode)
+	gin.SetMode(gin.ReleaseMode)
 
 	router := gin.Default()
 
@@ -32,6 +39,8 @@ func main() {
 	// Simple grouping routes: v1
 	v1 := router.Group("/v1")
 	{
+		v1.GET("/products", productHandler.SearchProduct)
+		v1.GET("/products-pagination", productHandler.PaginationProduct)
 		v1.GET("/users", userHandler.ReadUsers)
 		v1.GET("/users/:id", userHandler.ReadUserByID)
 		v1.POST("/users", userHandler.CreateUsers)

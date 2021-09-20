@@ -1,32 +1,44 @@
 package main
 
-import "webscrapping/controller"
+import (
+	"fmt"
+	"time"
+	"webscrapping/repository"
+
+	_ "github.com/go-sql-driver/mysql"
+)
 
 func main() {
-	// reader := bufio.NewReader(os.Stdin)
-	// fmt.Println("Select number web site")
-	// fmt.Println("1 Bigc")
-	// fmt.Println("2 Makro")
-	// fmt.Println("3 Lotus")
-	// fmt.Println("4 All web site")
-	// fmt.Print("Enter your number select: ")
-	// city, _ := reader.ReadString('\n')
-	// fmt.Print("Your number is  " + city)
-	// switch city {
-	// case "1\n": // เพราะตอนรับค่ามามี \n ต่อท้าย
-
-	// case "2\n":
-
-	// case "3\n":
-
-	// case "4\n":
-
-	// default:
-	// 	fmt.Println("Number incorrect")
-	// }
 	///////////////////////
 	// controller.Bigc()
 	// controller.Makro()
 	// controller.Lotus()
-	controller.All()
+	// controller.All()
+	// db, err := sql.Open("mysql", "root:mandarinkb@tcp(127.0.0.1)/TEST_DB?charset=utf8")
+	// if err != nil {
+	// 	fmt.Print(err)
+	// }
+
+	start := time.Now().Format(time.RFC3339)
+
+	// makro, err := repository.NewMakro().Makro()
+	// if err != nil {
+	// 	fmt.Println(err)
+	// }
+
+	bigc, err := repository.NewBigC().Bigc()
+	if err != nil {
+		fmt.Println(err)
+	}
+	_ = bigc
+
+	lotus, err := repository.NewLotus().Lotus()
+	if err != nil {
+		fmt.Println(err)
+	}
+	_ = lotus
+
+	end := time.Now().Format(time.RFC3339)
+	fmt.Println("start : ", start)
+	fmt.Println("end   : ", end)
 }

@@ -1,5 +1,5 @@
 ################## script v1 for library godror ########################
-FROM golang:1.16.6-alpine
+FROM golang:1.17-alpine
 RUN apk update && apk add gcc git && apk add libc-dev
 RUN apk --no-cache add libaio libnsl libc6-compat curl && \
     cd /tmp && \
@@ -26,6 +26,6 @@ COPY go.sum ./
 RUN go mod download
 COPY *.go ./
 RUN go build -o main .
-EXPOSE 8080
+EXPOSE 8000
 CMD [ "/app/main" ]
 ################## end script v1 for library godror ########################
