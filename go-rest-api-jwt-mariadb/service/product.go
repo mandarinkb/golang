@@ -1,5 +1,13 @@
 package service
 
+type NewResponse struct {
+	Content    []ProductRespose `json:"content"`
+	Page       int              `json:"page"`
+	PageSize   int              `json:"pageSize"`
+	TotalPage  int              `json:"totalPage"`
+	IsLastPage bool             `json:"isLastPage"`
+}
+
 type ProductRespose struct {
 	Timestamp     string  `json:"timestamp"`
 	WebName       string  `json:"web_name"`
@@ -13,5 +21,5 @@ type ProductRespose struct {
 }
 type ProductService interface {
 	Search(name string) ([]ProductRespose, error)
-	Pagination(page string, limit string) ([]ProductRespose, error)
+	Pagination(page string, limit string) (*NewResponse, error)
 }

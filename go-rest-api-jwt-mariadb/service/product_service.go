@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/mandarinkb/go-rest-api-jwt-mariadb/repository"
 	"github.com/mandarinkb/go-rest-api-jwt-mariadb/utils"
@@ -24,7 +25,7 @@ func (s productService) Search(name string) ([]ProductRespose, error) {
 	return mapDataProduct(productRepo), nil
 }
 
-func (s productService) Pagination(pageStr string, limitStr string) ([]ProductRespose, error) {
+func (s productService) Pagination(pageStr string, limitStr string) (*NewResponse, error) {
 
 	// ตรวจสอบว่ามีค่า limit หรือไม่
 	// กรณีไม่มีให้เซ็ตค่า default ไป
@@ -32,17 +33,36 @@ func (s productService) Pagination(pageStr string, limitStr string) ([]ProductRe
 		limitStr = utils.NewQueryParam().DefaultLimit()
 	}
 
-	page, limit, err := utils.NewQueryParam().SetPage(pageStr, limitStr)
+	pageDb, limit, err := utils.NewQueryParam().SetPage(pageStr, limitStr)
 	if err != nil {
 		return nil, err
 	}
 
-	productRepo, rows, err := s.productRepo.Pagination(page, limit)
+	productRepo, rows, err := s.productRepo.Pagination(pageDb, limit)
 	if err != nil {
 		return nil, err
 	}
+
+	totalPage, err := utils.NewQueryParam().GetTotalPage(rows, limit)
+	if err != nil {
+		return nil, err
+	}
+
+	page, err := strconv.Atoi(pageStr)
+	if err != nil {
+		return nil, err
+	}
+
+	products := NewResponse{
+		Content:    mapDataProduct(productRepo),
+		Page:       page,
+		PageSize:   limit,
+		TotalPage:  totalPage,
+		IsLastPage: utils.NewQueryParam().IsLastPage(page, totalPage),
+	}
+
 	fmt.Println("rows: ", rows)
-	return mapDataProduct(productRepo), nil
+	return &products, nil
 }
 
 // ฟังก็ชัน map data จาก repository ไปยัง service
