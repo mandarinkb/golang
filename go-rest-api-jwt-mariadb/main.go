@@ -36,11 +36,16 @@ func main() {
 	// CORS gin's middleware Default() allows all origins
 	// router.Use(cors.Default())
 
+	// ใช้ middleware ที่เขียนขึ้นมาเอง
+	// โดยจะต้องแนบ token มาถึงจะเรียกใช้งาน api ได้
+	router.Use(handlers.NewJwtHandler().JWTAuth)
+
 	// Simple grouping routes: v1
 	v1 := router.Group("/v1")
 	{
 		v1.GET("/products", productHandler.SearchProduct)
 		v1.GET("/products-pagination", productHandler.PaginationProduct)
+		v1.POST("/authenticate", userHandler.Authenticate)
 		v1.GET("/users", userHandler.ReadUsers)
 		v1.GET("/users/:id", userHandler.ReadUserByID)
 		v1.POST("/users", userHandler.CreateUsers)

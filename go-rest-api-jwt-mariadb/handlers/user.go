@@ -17,6 +17,56 @@ func NewUserHandler(userSrv service.UserService) userHandler {
 	return userHandler{userSrv: userSrv}
 }
 
+func (h userHandler) Authenticate(c *gin.Context) {
+	// request body จะถูกเรียกเมื่อ ใช้ ฟังก์ชัน BindJSON โดยค่าใน body จะตรงกับ reqBody
+	// reqBody ชื่อ filed ในนี้จะต้องตรงกับ ค่า key ใน body ด้วย
+	var reqBody service.UserRequest
+	// แปลงค่าจาก body payload เป็น struct
+	err := c.BindJSON(&reqBody)
+	if err != nil {
+		fmt.Println(err)
+		c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
+		return
+	}
+	token, err := h.userSrv.Authenticate(reqBody.Username, reqBody.Password)
+	if err != nil {
+		fmt.Println(err)
+		c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
+		return
+	}
+	c.IndentedJSON(http.StatusCreated, token)
+}
+
+// func (h userHandler) JWTAuth(c *gin.Context) {
+// 	permitPath := middleware.NewPermitPathConfig(c).Path("/v1/authenticate")
+// 	if permitPath {
+// 		c.Next()
+// 	} else {
+// 		tokenStr := c.Request.Header.Get("Authorization")
+// 		if len(tokenStr) == 0 {
+// 			c.IndentedJSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
+// 			// ใช้คำสั่ง c.Abort() จะหยุดการเรียก HandlerFunc อื่นต่อจากนี้
+// 			c.Abort()
+// 			return
+// 		}
+
+// 		if strings.HasPrefix(tokenStr, "Bearer ") {
+// 			tokenStr = strings.TrimPrefix(tokenStr, "Bearer ")
+// 			isToken, err := h.userSrv.VerifyToken(tokenStr)
+// 			if err != nil {
+// 				c.IndentedJSON(http.StatusUnauthorized, gin.H{"message": err.Error()})
+// 				c.Abort()
+// 				return
+// 			}
+// 			// เมื่อ token ถูกต้องจะเรียก Handler อื่นต่อจากนี้
+// 			if isToken {
+// 				// c.IndentedJSON(http.StatusOK, gin.H{"message": "token is valid"})
+// 				c.Next()
+// 			}
+// 		}
+// 	}
+// }
+
 func (h userHandler) ReadUsers(c *gin.Context) {
 	users, err := h.userSrv.Read()
 	if err != nil {

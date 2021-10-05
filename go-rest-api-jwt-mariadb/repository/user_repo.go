@@ -13,6 +13,24 @@ func NewUserRepo(db *sql.DB) UserRepository {
 	return userRepository{db: db}
 }
 
+func (r userRepository) Authenticate(username string) (*User, error) {
+	err := r.db.Ping()
+	if err != nil {
+		return nil, err
+	}
+	// mysql ใช้ ?
+	// ถ้ามี ? หลายตัว ก็ใส่ พารามิเตอร์ตาม index ไปเรื่อยๆ
+	query := "SELECT USER_ID, USERNAME, PASSWORD, USER_ROLE FROM USERS WHERE USERNAME=?"
+	row := r.db.QueryRow(query, username)
+	user := User{}
+	err = row.Scan(&user.UserId, &user.Username, &user.Password, &user.UserRole)
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
 func (r userRepository) Read() ([]User, error) {
 	// ตรวจสอบว่า server ได้เปิดอยู่หรือไม่
 	err := r.db.Ping()

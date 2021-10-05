@@ -7,6 +7,7 @@ type User struct {
 	UserRole string `db:"USER_ROLE"`
 }
 type UserRepository interface {
+	Authenticate(username string) (*User, error)
 	Read() ([]User, error)
 	ReadById(id int) (*User, error)
 	Create(user User) error
