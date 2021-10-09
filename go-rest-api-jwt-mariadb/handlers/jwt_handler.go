@@ -22,7 +22,6 @@ func (jwtHandler) JWTAuth(c *gin.Context) {
 	// กรณีที่เซ็ต path ที่ไม่ต้อง authenticate ไว้
 	// ไปทำคำสั่ง handler func อื่นต่อได้เลย
 	if permitPath {
-
 		c.Next()
 	} else {
 		// ต้องทำการตรวจสอบ token ก่อน ถึงจะทำคำสั่ง handler func อื่นต่อ
