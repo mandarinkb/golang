@@ -18,7 +18,7 @@ var secretKey = `cTq46<pSE8o;jD>~,H*an1_>uKj!nc1#S:+K&./_2uAiPr?N&.2c.m|^$HUZj0_
 
 func (jwtHandler) JWTAuth(c *gin.Context) {
 	// กำหนด path ที่ไม่ต้องทำการ authenticate
-	permitPath := middleware.NewPermitPathConfig(c).Path("/v1/authenticate")
+	permitPath := middleware.NewPermitPathConfig(c).Path("/v1/authenticate", "/v1/users/**")
 	// กรณีที่เซ็ต path ที่ไม่ต้อง authenticate ไว้
 	// ไปทำคำสั่ง handler func อื่นต่อได้เลย
 	if permitPath {
