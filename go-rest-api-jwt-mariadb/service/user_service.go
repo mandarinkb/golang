@@ -28,26 +28,19 @@ func (s userService) Authenticate(username string, password string) (*middleware
 
 	// กรณีพบ ตรวจสอบ password ต่อ และ รหัสผ่านถูกต้อง
 	if utils.NewBcrypt().CheckPasswordHash(password, userRepo.Password) {
-		token, err := middleware.NewJWTMaker(secretKey).GenerateToken(*userRepo)
+		td, err := middleware.NewJWTMaker(secretKey).GenerateToken(*userRepo)
 		if err != nil {
 			return nil, err
 		}
 		resToken := middleware.TokenResponse{
-			Token: token,
+			AccessToken:  td.AccessToken,
+			RefreshToken: td.RefreshToken,
 		}
 		return &resToken, nil
 	}
 	// กรณีรหัสผ่านไม่ถูกต้อง
 	return nil, errIncorrect
 }
-
-// func (s userService) VerifyToken(token string) (bool, error) {
-// 	isToken, err := middleware.NewJWTMaker(secretKey).VerifyToken(token)
-// 	if err != nil {
-// 		return false, err
-// 	}
-// 	return isToken, nil
-// }
 
 func (s userService) Read() ([]UserResponse, error) {
 	users := []UserResponse{}
