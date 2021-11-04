@@ -1,11 +1,14 @@
 package handlers
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/mandarinkb/go-rest-api-jwt-mariadb/database"
+	"github.com/mandarinkb/go-rest-api-jwt-mariadb/middleware"
 	"github.com/mandarinkb/go-rest-api-jwt-mariadb/service"
 )
 
@@ -35,6 +38,37 @@ func (h userHandler) Authenticate(c *gin.Context) {
 		return
 	}
 	c.IndentedJSON(http.StatusCreated, token)
+}
+
+func (h userHandler) Logout(c *gin.Context) {
+	// รับค่า token from header
+	token, err := middleware.NewJWTMaker().GetToken(c.Request)
+	if err != nil {
+		fmt.Println(err)
+		c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
+		return
+	}
+
+	// ดึงค่า claims จาก token
+	claimsDetail, err := middleware.NewJWTMaker().GetClaimsToken(token)
+	if err != nil {
+		fmt.Println(err)
+		c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
+		return
+	}
+
+	// connect redis
+	rdb := database.NewDatabase().RedisConn()
+	defer rdb.Close()
+
+	// ลบ access token และ refresh token
+	ctx := context.Background()
+	rdb.Del(ctx, claimsDetail.AccessUuid, claimsDetail.RefRefreshUuid)
+
+	fmt.Println("delete access  token: ", claimsDetail.AccessUuid)
+	fmt.Println("delete refresh token: ", claimsDetail.RefRefreshUuid)
+
+	c.IndentedJSON(http.StatusOK, gin.H{"message": "logout successful"})
 }
 
 func (h userHandler) ReadUsers(c *gin.Context) {

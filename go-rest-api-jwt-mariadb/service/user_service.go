@@ -8,8 +8,6 @@ import (
 	"github.com/mandarinkb/go-rest-api-jwt-mariadb/utils"
 )
 
-var secretKey = `cTq46<pSE8o;jD>~,H*an1_>uKj!nc1#S:+K&./_2uAiPr?N&.2c.m|^$HUZj0_`
-
 type userService struct {
 	userRepo repository.UserRepository
 }
@@ -28,7 +26,7 @@ func (s userService) Authenticate(username string, password string) (*middleware
 
 	// กรณีพบ ตรวจสอบ password ต่อ และ รหัสผ่านถูกต้อง
 	if utils.NewBcrypt().CheckPasswordHash(password, userRepo.Password) {
-		td, err := middleware.NewJWTMaker(secretKey).GenerateToken(*userRepo)
+		td, err := middleware.NewJWTMaker().GenerateToken(*userRepo)
 		if err != nil {
 			return nil, err
 		}
