@@ -1,0 +1,40 @@
+version: '3.5'
+services:    
+  mariadb:
+    image: mariadb:10.3
+    container_name: docker-compose-mariadb
+    restart: always
+    volumes: 
+      - mariadb-data:/var/lib/mysql
+    environment: 
+      - MYSQL_ROOT_PASSWORD=mandarinkb
+    ports:
+      - 3306:3306
+    networks:
+      - backend  
+  redis:
+    image: redis:latest
+    container_name: docker-compose-redis
+    restart: always
+    command: redis-server --requirepass mandarinkb --appendonly yes
+    # command: redis-server --requirepass $PASSWORD --appendonly yes
+    ports:
+      - 6379:6379
+    networks:
+      - backend
+  # go-api:
+  #   image: go-rest-api:latest
+  #   container_name: docker-compose-go-rest-api
+  #   depends_on:
+  #     - mariadb
+  #     - redis
+  #   ports:
+  #     - 8080:8080
+  #   networks:
+  #     - backend
+networks:
+  backend:       
+volumes:
+  mariadb-data:
+
+# parth /var/lib/docker/volumes
