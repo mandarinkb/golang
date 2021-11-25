@@ -25,8 +25,8 @@ func (s userService) Authenticate(username string, password string) (*middleware
 	}
 
 	// กรณีพบ ตรวจสอบ password ต่อ และ รหัสผ่านถูกต้อง
-	if utils.NewBcrypt().CheckPasswordHash(password, userRepo.Password) {
-		td, err := middleware.NewJWTMaker().GenerateToken(*userRepo)
+	if utils.CheckPasswordHash(password, userRepo.Password) {
+		td, err := middleware.GenerateToken(*userRepo)
 		if err != nil {
 			return nil, err
 		}
@@ -69,7 +69,7 @@ func (s userService) ReadById(id int) (*UserResponse, error) {
 }
 
 func (s userService) Create(user UserRequest) (*UserResponse, error) {
-	passwordHash, err := utils.NewBcrypt().HashPassword(user.Password)
+	passwordHash, err := utils.HashPassword(user.Password)
 	if err != nil {
 		return nil, err
 	}
@@ -85,7 +85,7 @@ func (s userService) Create(user UserRequest) (*UserResponse, error) {
 }
 
 func (s userService) Update(user UserRequest) (*UserResponse, error) {
-	passwordHash, err := utils.NewBcrypt().HashPassword(user.Password)
+	passwordHash, err := utils.HashPassword(user.Password)
 	if err != nil {
 		return nil, err
 	}

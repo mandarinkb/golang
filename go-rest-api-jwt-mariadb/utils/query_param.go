@@ -11,17 +11,11 @@ type Param struct {
 	Limit       string
 }
 
-type queryParam struct{}
-
-func NewQueryParam() queryParam {
-	return queryParam{}
-}
-
-func (queryParam) DefaultLimit() string {
+func DefaultLimit() string {
 	return "10"
 }
 
-func (queryParam) SetPage(pageStr string, limitStr string) (int, int, error) {
+func SetPage(pageStr string, limitStr string) (int, int, error) {
 	//strconv.Atoi() convert string to int
 	page, err := strconv.Atoi(pageStr)
 	if err != nil {
@@ -37,7 +31,7 @@ func (queryParam) SetPage(pageStr string, limitStr string) (int, int, error) {
 }
 
 // หาจำนวนหน้า page ทั้งหมด กรณีทำ pagination
-func (queryParam) GetTotalPage(totalRows int, limit int) (int, error) {
+func GetTotalPage(totalRows int, limit int) (int, error) {
 	var total int
 	// แปลงเป็น float64 ก่อน เพื่อใช้ฟังก์ชัน  math.Trunc()
 	totalPage := float64(totalRows) / float64(limit)
@@ -51,6 +45,6 @@ func (queryParam) GetTotalPage(totalRows int, limit int) (int, error) {
 }
 
 // เช็คว่าคือ lasty page หรือไม่
-func (queryParam) IsLastPage(page int, totalPage int) bool {
+func IsLastPage(page int, totalPage int) bool {
 	return page == totalPage
 }

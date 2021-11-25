@@ -42,7 +42,7 @@ func (h userHandler) Authenticate(c *gin.Context) {
 
 func (h userHandler) Logout(c *gin.Context) {
 	// รับค่า token from header
-	token, err := middleware.NewJWTMaker().GetToken(c.Request)
+	token, err := middleware.GetToken(c.Request)
 	if err != nil {
 		fmt.Println(err)
 		c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
@@ -50,7 +50,7 @@ func (h userHandler) Logout(c *gin.Context) {
 	}
 
 	// ดึงค่า claims จาก token
-	claimsDetail, err := middleware.NewJWTMaker().GetClaimsToken(token)
+	claimsDetail, err := middleware.GetClaimsToken(token)
 	if err != nil {
 		fmt.Println(err)
 		c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
@@ -58,7 +58,7 @@ func (h userHandler) Logout(c *gin.Context) {
 	}
 
 	// connect redis
-	rdb := database.NewDatabase().RedisConn()
+	rdb := database.RedisConn()
 	defer rdb.Close()
 
 	// ลบ access token และ refresh token

@@ -2,26 +2,36 @@ package database
 
 import (
 	"database/sql"
+	"log"
 
 	"github.com/go-redis/redis/v8"
+	"github.com/mandarinkb/go-rest-api-jwt-mariadb/utils"
 )
 
-type database struct{}
+var redisHost string
+var redisPassword string
+var driverName string
+var datasourceName string
 
-func NewDatabase() database {
-	return database{}
+func init() {
+	config, err := utils.LoadConfig(".")
+	if err != nil {
+		log.Fatal("cannot load config:", err)
+	}
+	redisHost = config.RedisHost
+	redisPassword = config.RedisPassword
+	driverName = config.DriverName
+	datasourceName = config.DatasourceName
 }
 
-func (database) RedisConn() *redis.Client {
+func RedisConn() *redis.Client {
 	return redis.NewClient(&redis.Options{
-		// Addr:     "localhost:6379",
-		Addr:     "redis:6379",
-		Password: "mandarinkb", // set password
-		DB:       0,            // use default DB
+		Addr:     redisHost,
+		Password: redisPassword, // set password
+		DB:       0,             // use default DB
 	})
 }
 
-func (database) Conn() (*sql.DB, error) {
-	// return sql.Open("mysql", "root:mandarinkb@tcp(127.0.0.1)/TEST_DB?charset=utf8")
-	return sql.Open("mysql", "root:mandarinkb@tcp(mariadb)/TEST_DB?charset=utf8")
+func Conn() (*sql.DB, error) {
+	return sql.Open(driverName, datasourceName)
 }

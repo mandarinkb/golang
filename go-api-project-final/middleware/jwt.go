@@ -40,12 +40,6 @@ type ClaimsDetails struct {
 	RefRefreshUuid string  `json:"ref_refresh_uuid"`
 }
 
-type jwtMaker struct{}
-
-func NewJWTMaker() jwtMaker {
-	return jwtMaker{}
-}
-
 var ctx = context.Background()
 var secretKey string
 
@@ -58,7 +52,7 @@ func init() {
 }
 
 // ดึง toke จาก header
-func (jwtMaker) GetToken(r *http.Request) (string, error) {
+func GetToken(r *http.Request) (string, error) {
 	tokenHeader := r.Header.Get("Authorization")
 	if len(tokenHeader) == 0 {
 		return "", errors.New("authorization key in header not found")
@@ -72,9 +66,9 @@ func (jwtMaker) GetToken(r *http.Request) (string, error) {
 }
 
 // สร้าง token
-func (jwtMaker) GenerateToken(user repository.User) (*TokenDetails, error) {
+func GenerateToken(user repository.User) (*TokenDetails, error) {
 	td := &TokenDetails{}
-	td.AtExpires = time.Now().Add(time.Minute * 50).Unix()
+	td.AtExpires = time.Now().Add(time.Minute * 10).Unix()
 	td.AccessUuid = uuid.New().String()
 
 	td.RtExpires = time.Now().Add(time.Hour * 24).Unix()
@@ -130,7 +124,7 @@ func (jwtMaker) GenerateToken(user repository.User) (*TokenDetails, error) {
 	}
 
 	// connect redis
-	rdb := database.NewDatabase().RedisConn()
+	rdb := database.RedisConn()
 	defer rdb.Close()
 
 	// จัดเก็บ access token ลง redis
@@ -152,12 +146,12 @@ func (jwtMaker) GenerateToken(user repository.User) (*TokenDetails, error) {
 }
 
 // ตรวจสอบ token
-func (jwtMaker) VerifyAccessToken(tokenStr string) (bool, error) {
+func verifyAccessToken(tokenStr string) (bool, error) {
 	// connect redis
-	rdb := database.NewDatabase().RedisConn()
+	rdb := database.RedisConn()
 	defer rdb.Close()
 	// ดึงค่า claims จาก token
-	claimsDetail, err := NewJWTMaker().GetClaimsToken(tokenStr)
+	claimsDetail, err := GetClaimsToken(tokenStr)
 	if err != nil {
 		return false, err
 	}
@@ -174,12 +168,12 @@ func (jwtMaker) VerifyAccessToken(tokenStr string) (bool, error) {
 }
 
 // get refresh_uuid ใน Payload จาก token
-func (jwtMaker) VerifyRefreshToken(tokenStr string) (bool, error) {
+func verifyRefreshToken(tokenStr string) (bool, error) {
 	// connect redis
-	rdb := database.NewDatabase().RedisConn()
+	rdb := database.RedisConn()
 	defer rdb.Close()
 	// ดึงค่า claims จาก token
-	claimsDetail, err := NewJWTMaker().GetClaimsToken(tokenStr)
+	claimsDetail, err := GetClaimsToken(tokenStr)
 	if err != nil {
 		return false, err
 	}
@@ -197,7 +191,7 @@ func (jwtMaker) VerifyRefreshToken(tokenStr string) (bool, error) {
 }
 
 // get claims ใน Payload จาก token
-func (jwtMaker) GetClaimsToken(tokenStr string) (*ClaimsDetails, error) {
+func GetClaimsToken(tokenStr string) (*ClaimsDetails, error) {
 	// ตรวจสอบความถูกต้องของ token
 	// นำ secret key ที่ตั้งไว้มาถอดรหัส
 	keyFunc := func(token *jwt.Token) (interface{}, error) {

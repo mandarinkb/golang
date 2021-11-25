@@ -13,7 +13,7 @@ import (
 )
 
 func main() {
-	db, err := database.NewDatabase().Conn()
+	db, err := database.Conn()
 	if err != nil {
 		fmt.Print(err)
 	}
@@ -34,16 +34,16 @@ func main() {
 	router := gin.Default()
 
 	// ใช้ middleware CORS ที่เขียนขึ้นมาเอง
-	router.Use(middleware.NewCors().CORS())
+	router.Use(middleware.CORS())
 
 	// ใช้ middleware ที่เขียนขึ้นมาเอง
 	// โดยจะต้องแนบ token มาถึงจะเรียกใช้งาน api ได้
-	router.Use(middleware.NewJwtAuth().JWTAuth)
+	router.Use(middleware.JWTAuth)
 
 	// Simple grouping routes: v1
 	v1 := router.Group("/v1")
 	{
-		v1.POST("/token/refresh", middleware.NewJwtAuth().JWTRefresh)
+		v1.POST("/token/refresh", middleware.JWTRefresh)
 		v1.GET("/products", productHandler.SearchProduct)
 		v1.GET("/products-pagination", productHandler.PaginationProduct)
 		v1.POST("/authenticate", userHandler.Authenticate)

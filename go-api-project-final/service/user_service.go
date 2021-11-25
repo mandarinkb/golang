@@ -25,8 +25,8 @@ func (s userService) Authenticate(username string, password string) (*middleware
 	}
 
 	// กรณีพบ ตรวจสอบ password ต่อ และ รหัสผ่านถูกต้อง
-	if utils.NewBcrypt().CheckPasswordHash(password, userRepo.Password) {
-		td, err := middleware.NewJWTMaker().GenerateToken(*userRepo)
+	if utils.CheckPasswordHash(password, userRepo.Password) {
+		td, err := middleware.GenerateToken(*userRepo)
 		if err != nil {
 			return nil, err
 		}
@@ -91,7 +91,7 @@ func (s userService) Delete(id int) error {
 
 // แปลงค่า เพื่อส่งไปยัง repository
 func mapDataUserRequest(user UserRequest) repository.User {
-	passwordHash, _ := utils.NewBcrypt().HashPassword(user.Password)
+	passwordHash, _ := utils.HashPassword(user.Password)
 	return repository.User{
 		UserId:   user.UserId,
 		Username: user.Username,

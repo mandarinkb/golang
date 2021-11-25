@@ -10,13 +10,7 @@ import (
 	"github.com/mandarinkb/go-api-project-final/repository"
 )
 
-type jwtAuth struct{}
-
-func NewJwtAuth() jwtAuth {
-	return jwtAuth{}
-}
-
-func (jwtAuth) JWTAuth(c *gin.Context) {
+func JWTAuth(c *gin.Context) {
 	// กำหนด path ที่ไม่ต้องทำการ authenticate
 	permitPath := NewPermitPathConfig(c).Path("/v1/authenticate", "/v1/token/refresh")
 	// กรณีที่เซ็ต path ที่ไม่ต้อง authenticate ไว้
@@ -26,7 +20,7 @@ func (jwtAuth) JWTAuth(c *gin.Context) {
 	} else {
 		// ต้องทำการตรวจสอบ token ก่อน ถึงจะทำคำสั่ง handler func อื่นต่อ
 		// ดึง token จาก header
-		token, err := NewJWTMaker().GetToken(c.Request)
+		token, err := GetToken(c.Request)
 		if err != nil {
 			c.IndentedJSON(http.StatusUnauthorized, gin.H{"message": err.Error()})
 			// ใช้คำสั่ง c.Abort() จะหยุดการเรียก HandlerFunc อื่นต่อจากนี้
@@ -34,7 +28,7 @@ func (jwtAuth) JWTAuth(c *gin.Context) {
 			return
 		}
 		// ตรวจสอบ token
-		isToken, err := NewJWTMaker().VerifyAccessToken(token)
+		isToken, err := verifyAccessToken(token)
 		if err != nil {
 			c.IndentedJSON(http.StatusUnauthorized, gin.H{"message": err.Error()})
 			c.Abort()
@@ -48,7 +42,7 @@ func (jwtAuth) JWTAuth(c *gin.Context) {
 	}
 }
 
-func (jwtAuth) JWTRefresh(c *gin.Context) {
+func JWTRefresh(c *gin.Context) {
 	// กำหนด type ของ key value
 	mapToken := map[string]string{}
 	if err := c.ShouldBindJSON(&mapToken); err != nil {
@@ -59,14 +53,14 @@ func (jwtAuth) JWTRefresh(c *gin.Context) {
 	refreshToken := mapToken["refresh_token"]
 
 	// ตรวจสอบ refresh token
-	_, err := NewJWTMaker().VerifyRefreshToken(refreshToken)
+	_, err := verifyRefreshToken(refreshToken)
 	if err != nil {
 		c.IndentedJSON(http.StatusUnauthorized, gin.H{"message": err.Error()})
 		return
 	}
 
 	// ดึงค่า claims จาก token
-	claimsDetail, err := NewJWTMaker().GetClaimsToken(refreshToken)
+	claimsDetail, err := GetClaimsToken(refreshToken)
 	if err != nil {
 		c.IndentedJSON(http.StatusUnauthorized, gin.H{"message": err.Error()})
 		return
@@ -78,7 +72,7 @@ func (jwtAuth) JWTRefresh(c *gin.Context) {
 		UserRole: claimsDetail.Roles,
 	}
 	// สร้าง token ขึ้นมาใหม่
-	td, err := NewJWTMaker().GenerateToken(user)
+	td, err := GenerateToken(user)
 	if err != nil {
 		c.IndentedJSON(http.StatusUnprocessableEntity, gin.H{"message": err.Error()})
 		return
@@ -93,7 +87,7 @@ func (jwtAuth) JWTRefresh(c *gin.Context) {
 	fmt.Println("delete old refresh token: ", claimsDetail.RefreshUuid)
 
 	// connect redis
-	rdb := database.NewDatabase().RedisConn()
+	rdb := database.RedisConn()
 	defer rdb.Close()
 	// ลบ(revoke) access token และ refresh token เก่า ออกจาก redis
 	ctx := context.Background()

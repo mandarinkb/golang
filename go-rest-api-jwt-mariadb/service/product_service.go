@@ -30,10 +30,10 @@ func (s productService) Pagination(pageStr string, limitStr string) (*NewRespons
 	// ตรวจสอบว่ามีค่า limit หรือไม่
 	// กรณีไม่มีให้เซ็ตค่า default ไป
 	if limitStr == "" {
-		limitStr = utils.NewQueryParam().DefaultLimit()
+		limitStr = utils.DefaultLimit()
 	}
 
-	pageDb, limit, err := utils.NewQueryParam().SetPage(pageStr, limitStr)
+	pageDb, limit, err := utils.SetPage(pageStr, limitStr)
 	if err != nil {
 		return nil, err
 	}
@@ -43,7 +43,7 @@ func (s productService) Pagination(pageStr string, limitStr string) (*NewRespons
 		return nil, err
 	}
 
-	totalPage, err := utils.NewQueryParam().GetTotalPage(rows, limit)
+	totalPage, err := utils.GetTotalPage(rows, limit)
 	if err != nil {
 		return nil, err
 	}
@@ -58,7 +58,7 @@ func (s productService) Pagination(pageStr string, limitStr string) (*NewRespons
 		Page:       page,
 		PageSize:   limit,
 		TotalPage:  totalPage,
-		IsLastPage: utils.NewQueryParam().IsLastPage(page, totalPage),
+		IsLastPage: utils.IsLastPage(page, totalPage),
 	}
 
 	fmt.Println("rows: ", rows)

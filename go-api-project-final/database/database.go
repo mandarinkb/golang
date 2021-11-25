@@ -9,12 +9,6 @@ import (
 	"github.com/mandarinkb/go-api-project-final/utils"
 )
 
-type database struct{}
-
-func NewDatabase() database {
-	return database{}
-}
-
 var redisHost string
 var redisPassword string
 var driverName string
@@ -31,7 +25,7 @@ func init() {
 	datasourceName = config.DatasourceName
 }
 
-func (database) RedisConn() *redis.Client {
+func RedisConn() *redis.Client {
 	return redis.NewClient(&redis.Options{
 		Addr:     redisHost,
 		Password: redisPassword, // set password
@@ -39,6 +33,6 @@ func (database) RedisConn() *redis.Client {
 	})
 }
 
-func (database) Conn() (*sql.DB, error) {
+func Conn() (*sql.DB, error) {
 	return sql.Open(driverName, datasourceName)
 }
