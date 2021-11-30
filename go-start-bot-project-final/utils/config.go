@@ -1,6 +1,10 @@
 package utils
 
-import "github.com/spf13/viper"
+import (
+	"log"
+
+	"github.com/spf13/viper"
+)
 
 type Config struct {
 	RedisHost      string `mapstructure:"REDIS_HOST"`
@@ -10,14 +14,14 @@ type Config struct {
 	Secretkey      string `mapstructure:"SECRETKEY"`
 }
 
-func LoadConfig(path string) (config Config, err error) {
+func LoadConfig(path string) (config *Config, err error) {
 	viper.AddConfigPath(path)
 	viper.SetConfigFile(".env")
-
 	viper.AutomaticEnv()
 
 	err = viper.ReadInConfig()
 	if err != nil {
+		log.Fatal(err)
 		return
 	}
 
