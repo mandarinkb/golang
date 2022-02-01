@@ -81,15 +81,3 @@ func main() {
 	}
 	router.Run(":8080")
 }
-
-// func restart() {
-// 	procAttr := new(os.ProcAttr)
-// 	procAttr.Files = []*os.File{os.Stdin, os.Stdout, os.Stderr}
-// 	os.StartProcess(os.Args[0], []string{}, procAttr)
-// 	fmt.Println("restart")
-// }
-// func restartHandler() gin.HandlerFunc {
-// 	return func(c *gin.Context) {
-// 		restart()
-// 	}
-// }

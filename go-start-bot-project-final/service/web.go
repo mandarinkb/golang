@@ -1,11 +1,11 @@
 package service
 
 type Web struct {
-	WebId     int    `db:"webId"`
-	WebName   string `db:"webName"`
-	WebUrl    string `db:"webUrl"`
-	WebStatus string `db:"webStatus"`
-	IconUrl   string `db:"iconUrl"`
+	WebId     int    `json:"webId"`
+	WebName   string `json:"webName"`
+	WebUrl    string `json:"webUrl"`
+	WebStatus string `json:"webStatus"`
+	IconUrl   string `json:"iconUrl"`
 }
 
 type WebService interface {

@@ -1,13 +1,16 @@
 version: '3.5'
 services:  
-  go-start-bot:
-    image: go-start-bot:1.0
-    container_name: docker-compose-go-start-bot
-    ports:
-      - 8081:8081
+  # go-start-bot:
+  #   image: go-start-bot:1.0
+  #   ports:
+  #     - 8081:8081
+  # go-fetcu-url-bot:
+  #   image: go-fetch-url-bot:1.0
+  go-web-scrapping-bot:
+    image: go-web-scrapping-bot:1.0
 networks: 
   default: 
     external: 
-      name: goapiprojectfinal_dataase
+      name: project-final
 
 # parth /var/lib/docker/volumes

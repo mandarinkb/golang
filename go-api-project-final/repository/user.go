@@ -8,9 +8,11 @@ type User struct {
 }
 type UserRepository interface {
 	Authenticate(username string) (*User, error)
+	GetPassword(id int) (*User, error)
 	Read() ([]User, error)
 	ReadById(id int) (*User, error)
 	Create(user User) error
+	UpdateWithoutPassword(user User) error
 	Update(user User) error
 	Delete(id int) error
 }

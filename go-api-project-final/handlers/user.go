@@ -132,7 +132,7 @@ func (h userHandler) UpdateUsers(c *gin.Context) {
 	user, err := h.userSrv.Update(reqBody)
 	if err != nil {
 		fmt.Println(err)
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "user not found"})
+		c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
 		return
 	}
 	c.IndentedJSON(http.StatusOK, user)
@@ -151,7 +151,7 @@ func (h userHandler) DeleteUsers(c *gin.Context) {
 	err = h.userSrv.Delete(id)
 	if err != nil {
 		fmt.Println(err)
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "user not found"})
+		c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
 		return
 	}
 	c.IndentedJSON(http.StatusOK, gin.H{"message": "delete user success"})

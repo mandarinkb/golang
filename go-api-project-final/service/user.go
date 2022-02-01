@@ -11,8 +11,9 @@ type UserRequest struct {
 	ConfirmNewPassword string `json:"confirmNewPassword"`
 }
 type UserResponse struct {
+	UserId   int    `json:"userId"`
 	Username string `json:"username"`
-	UserRole string `json:"user_role"`
+	UserRole string `json:"role"`
 }
 
 type UserService interface {

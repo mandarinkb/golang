@@ -11,6 +11,7 @@ type Config struct {
 	RedisPassword  string `mapstructure:"REDIS_PASSWORD"`
 	DriverName     string `mapstructure:"DRIVER_NAME"`
 	DatasourceName string `mapstructure:"DATASOURCE_NAME"`
+	Elasticsearch  string `mapstructure:"ELASTICSEARCH"`
 }
 
 func LoadConfig(path string) (config *Config, err error) {

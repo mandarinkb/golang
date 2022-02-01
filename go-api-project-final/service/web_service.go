@@ -1,6 +1,8 @@
 package service
 
-import "github.com/mandarinkb/go-api-project-final/repository"
+import (
+	"github.com/mandarinkb/go-api-project-final/repository"
+)
 
 type webService struct {
 	webServ repository.WebRepository

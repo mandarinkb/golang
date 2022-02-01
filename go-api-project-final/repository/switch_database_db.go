@@ -120,6 +120,21 @@ func (s switchDBRepo) UpdateStatus(swDb SwitchDatabase) error {
 	if affected <= 0 {
 		return errors.New("cannot update switch")
 	}
+	// update สถานอื่นๆ ให้เป็น 0
+	query2 := "UPDATE SWITCH_DATABASE SET DATABASE_STATUS = '0' WHERE DATABASE_ID <>?"
+	result2, err2 := s.db.Exec(query2, swDb.DatabaseId)
+	if err2 != nil {
+		return err2
+	}
+
+	affected2, err2 := result2.RowsAffected()
+	if err2 != nil {
+		return err2
+	}
+
+	if affected2 <= 0 {
+		return errors.New("cannot update")
+	}
 
 	return nil
 

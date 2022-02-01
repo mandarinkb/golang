@@ -11,10 +11,7 @@ services:
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - discovery.type=single-node
     ports:
-      # - 5109:9300
-      - 5209:9200
-    networks:
-      - dataase  
+      - 5209:9200 
   mariadb:
     image: mariadb:10.3
     container_name: docker-compose-mariadb
@@ -25,9 +22,7 @@ services:
       # - MYSQL_ROOT_PASSWORD=mandarinkb
       - MYSQL_ROOT_PASSWORD=${MARIA_PASSWORD}
     ports:
-      - 3306:3306
-    networks:
-      - dataase  
+      - 3306:3306 
   redis:
     image: redis:latest
     container_name: docker-compose-redis
@@ -36,21 +31,21 @@ services:
     command: redis-server --requirepass ${REDIS_PASSWORD} --appendonly yes
     ports:
       - 6379:6379
-    networks:
-      - dataase
-  go-api:
-    image: go-api:latest
-    container_name: docker-compose-go-start-bot
-    depends_on:
-      - mariadb
-      - redis
-      - elasticsearch
-    ports:
-      - 8080:8080
-    networks:
-      - dataase
-networks:
-  dataase:       
+  # go-api:
+  #   image: go-api:latest
+  #   container_name: docker-compose-go-start-bot
+  #   depends_on:
+  #     - mariadb
+  #     - redis
+  #     - elasticsearch
+  #   ports:
+  #     - 8080:8080
+  #   # expose:
+  #   #   - "8080"
+networks: 
+  default: 
+    external: 
+      name: project-final  
 volumes:
   mariadb-data:
   elasticsearch-data:

@@ -31,6 +31,24 @@ func (r userRepo) Authenticate(username string) (*User, error) {
 	return &user, nil
 }
 
+func (r userRepo) GetPassword(id int) (*User, error) {
+	err := r.db.Ping()
+	if err != nil {
+		return nil, err
+	}
+	// mysql ใช้ ?
+	// ถ้ามี ? หลายตัว ก็ใส่ พารามิเตอร์ตาม index ไปเรื่อยๆ
+	query := "SELECT PASSWORD FROM USERS WHERE USER_ID=?"
+	row := r.db.QueryRow(query, id)
+	user := User{}
+	err = row.Scan(&user.Password)
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
 func (r userRepo) Read() ([]User, error) {
 	// ตรวจสอบว่า server ได้เปิดอยู่หรือไม่
 	err := r.db.Ping()
@@ -96,6 +114,30 @@ func (r userRepo) Create(user User) error {
 	// กรณี insert ไม่สำเร็จ
 	if affected <= 0 {
 		return errors.New("cannot insert")
+	}
+
+	return nil
+}
+
+func (r userRepo) UpdateWithoutPassword(user User) error {
+	err := r.db.Ping()
+	if err != nil {
+		return err
+	}
+	query := "UPDATE USERS SET USERNAME=?, USER_ROLE=? WHERE USER_ID=?"
+	result, err := r.db.Exec(query, user.Username, user.UserRole, user.UserId)
+	if err != nil {
+		return err
+	}
+
+	// รับค่ามาเพื่อตรวสสอบว่า update สำเร็จหรือไม่
+	affected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	// กรณี update ไม่สำเร็จ
+	if affected <= 0 {
+		return errors.New("cannot update")
 	}
 
 	return nil
