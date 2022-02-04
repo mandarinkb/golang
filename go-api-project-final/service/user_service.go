@@ -17,11 +17,10 @@ func NewUserServ(userRepo repository.UserRepository) UserService {
 }
 
 func (s userService) Authenticate(username string, password string) (*middleware.TokenResponse, error) {
-	var errIncorrect = errors.New("username or password incorrect")
 	userRepo, err := s.userRepo.Authenticate(username)
 	// กรณีไม่พบ username ใน database
 	if err != nil {
-		return nil, errIncorrect
+		return nil, err
 	}
 
 	// กรณีพบ ตรวจสอบ password ต่อ และ รหัสผ่านถูกต้อง
@@ -37,7 +36,7 @@ func (s userService) Authenticate(username string, password string) (*middleware
 		return &resToken, nil
 	}
 	// กรณีรหัสผ่านไม่ถูกต้อง
-	return nil, errIncorrect
+	return nil, errors.New("username or password incorrect")
 }
 
 func (s userService) Read() (users []UserResponse, err error) {
@@ -97,8 +96,13 @@ func (s userService) Update(user UserRequest) (*UserResponse, error) {
 	return nil, errors.New("password incorrect")
 }
 
-func (s userService) Delete(id int) error {
-	return s.userRepo.Delete(id)
+func (s userService) Delete(id int) (string, error) {
+	userRepo, err := s.userRepo.ReadById(id)
+	if err != nil {
+		return "", err
+	}
+	userRes := mapDataUserResponse(*userRepo)
+	return userRes.Username, s.userRepo.Delete(id)
 }
 
 // แปลงค่า เพื่อส่งไปยัง repository

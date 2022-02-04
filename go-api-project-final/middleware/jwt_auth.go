@@ -2,13 +2,16 @@ package middleware
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/mandarinkb/go-api-project-final/database"
 	"github.com/mandarinkb/go-api-project-final/repository"
+	"github.com/mandarinkb/go-api-project-final/utils"
 )
+
+// เอาไว้ใช้ใน log
+var Username string
 
 func JWTAuth(c *gin.Context) {
 	// กำหนด path ที่ไม่ต้องทำการ authenticate
@@ -18,22 +21,48 @@ func JWTAuth(c *gin.Context) {
 	if permitPath {
 		c.Next()
 	} else {
+		// config zap log
+		logger, err := utils.LogConf()
+		if err != nil {
+			logger.Error(err.Error(), utils.Url(c.Request.URL.Path),
+				utils.User("-"), utils.Type(utils.TypeWeb))
+		}
+		// close log
+		defer logger.Sync()
+
 		// ต้องทำการตรวจสอบ token ก่อน ถึงจะทำคำสั่ง handler func อื่นต่อ
 		// ดึง token จาก header
 		token, err := GetToken(c.Request)
 		if err != nil {
+			logger.Error(err.Error(), utils.Url(c.Request.URL.Path),
+				utils.User("-"), utils.Type(utils.TypeWeb))
 			c.IndentedJSON(http.StatusUnauthorized, gin.H{"message": err.Error()})
 			// ใช้คำสั่ง c.Abort() จะหยุดการเรียก HandlerFunc อื่นต่อจากนี้
 			c.Abort()
 			return
 		}
-		// ตรวจสอบ token
-		isToken, err := verifyAccessToken(token)
+
+		// ดึง username ที่อยู่ใน token เพื่อไว้เก็บ log
+		claimsDetail, err := GetClaimsToken(token)
 		if err != nil {
+			logger.Error(err.Error(), utils.Url(c.Request.URL.Path),
+				utils.User("-"), utils.Type(utils.TypeWeb))
 			c.IndentedJSON(http.StatusUnauthorized, gin.H{"message": err.Error()})
 			c.Abort()
 			return
 		}
+		Username = claimsDetail.Subject
+
+		// ตรวจสอบ token
+		isToken, err := verifyAccessToken(token)
+		if err != nil {
+			logger.Error(err.Error(), utils.Url(c.Request.URL.Path),
+				utils.User(Username), utils.Type(utils.TypeWeb))
+			c.IndentedJSON(http.StatusUnauthorized, gin.H{"message": err.Error()})
+			c.Abort()
+			return
+		}
+
 		// เมื่อ token ถูกต้องจะเรียก Handler อื่นต่อจากนี้
 		if isToken {
 			c.Next()
@@ -43,9 +72,20 @@ func JWTAuth(c *gin.Context) {
 }
 
 func JWTRefresh(c *gin.Context) {
+	// config zap log
+	logger, err := utils.LogConf()
+	if err != nil {
+		logger.Error(err.Error(), utils.Url(c.Request.URL.Path),
+			utils.User("-"), utils.Type(utils.TypeWeb))
+	}
+	// close log
+	defer logger.Sync()
+
 	// กำหนด type ของ key value
 	mapToken := map[string]string{}
 	if err := c.ShouldBindJSON(&mapToken); err != nil {
+		logger.Error(err.Error(), utils.Url(c.Request.URL.Path),
+			utils.User("-"), utils.Type(utils.TypeWeb))
 		c.IndentedJSON(http.StatusUnprocessableEntity, gin.H{"message": err.Error()})
 		return
 	}
@@ -53,8 +93,10 @@ func JWTRefresh(c *gin.Context) {
 	refreshToken := mapToken["refresh_token"]
 
 	// ตรวจสอบ refresh token
-	_, err := verifyRefreshToken(refreshToken)
-	if err != nil {
+	_, err2 := verifyRefreshToken(refreshToken)
+	if err2 != nil {
+		logger.Error(err2.Error(), utils.Url(c.Request.URL.Path),
+			utils.User("-"), utils.Type(utils.TypeWeb))
 		c.IndentedJSON(http.StatusUnauthorized, gin.H{"message": err.Error()})
 		return
 	}
@@ -62,6 +104,8 @@ func JWTRefresh(c *gin.Context) {
 	// ดึงค่า claims จาก token
 	claimsDetail, err := GetClaimsToken(refreshToken)
 	if err != nil {
+		logger.Error(err.Error(), utils.Url(c.Request.URL.Path),
+			utils.User("-"), utils.Type(utils.TypeWeb))
 		c.IndentedJSON(http.StatusUnauthorized, gin.H{"message": err.Error()})
 		return
 	}
@@ -74,6 +118,8 @@ func JWTRefresh(c *gin.Context) {
 	// สร้าง token ขึ้นมาใหม่
 	td, err := GenerateToken(user)
 	if err != nil {
+		logger.Error(err.Error(), utils.Url(c.Request.URL.Path),
+			utils.User(claimsDetail.Subject), utils.Type(utils.TypeWeb))
 		c.IndentedJSON(http.StatusUnprocessableEntity, gin.H{"message": err.Error()})
 		return
 	}
@@ -83,9 +129,6 @@ func JWTRefresh(c *gin.Context) {
 		RefreshToken: td.RefreshToken,
 	}
 
-	fmt.Println("delete old access  token: ", claimsDetail.RefAccessUuid)
-	fmt.Println("delete old refresh token: ", claimsDetail.RefreshUuid)
-
 	// connect redis
 	rdb := database.RedisConn()
 	defer rdb.Close()
@@ -93,5 +136,7 @@ func JWTRefresh(c *gin.Context) {
 	ctx := context.Background()
 	rdb.Del(ctx, claimsDetail.RefAccessUuid, claimsDetail.RefreshUuid)
 
+	logger.Info("create new token", utils.Url(c.Request.URL.Path),
+		utils.User(claimsDetail.Subject), utils.Type(utils.TypeWeb))
 	c.IndentedJSON(http.StatusCreated, resToken)
 }

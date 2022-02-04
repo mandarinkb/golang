@@ -22,5 +22,5 @@ type UserService interface {
 	ReadById(id int) (*UserResponse, error)
 	Create(user UserRequest) (*UserResponse, error)
 	Update(user UserRequest) (*UserResponse, error)
-	Delete(id int) error
+	Delete(id int) (string, error)
 }

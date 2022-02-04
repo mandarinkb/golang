@@ -40,10 +40,13 @@ type ClaimsDetails struct {
 	RefRefreshUuid string  `json:"ref_refresh_uuid"`
 }
 
-var ctx = context.Background()
-var secretKey string
+var (
+	ctx       context.Context = context.Background()
+	secretKey string
+)
 
 func init() {
+	// load config from env file before call function
 	config, err := utils.LoadConfig(".")
 	if err != nil {
 		log.Fatal("cannot load config:", err)

@@ -45,8 +45,13 @@ func (w webService) UpdateStatus(web Web) error {
 	return w.webServ.UpdateStatus(mapDataWebRequest(web))
 }
 
-func (w webService) Delete(id int) error {
-	return w.webServ.Delete(id)
+func (w webService) Delete(id int) (string, error) {
+	webRepo, err := w.webServ.ReadById(id)
+	if err != nil {
+		return "", err
+	}
+	webRes := mapDataWebResponse(*webRepo)
+	return webRes.WebName, w.webServ.Delete(id)
 }
 
 // แปลงค่า เพื่อส่งไปยัง repository

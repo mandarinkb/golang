@@ -14,5 +14,5 @@ type WebService interface {
 	Create(web Web) error
 	Update(web Web) error
 	UpdateStatus(web Web) error
-	Delete(id int) error
+	Delete(id int) (string, error)
 }

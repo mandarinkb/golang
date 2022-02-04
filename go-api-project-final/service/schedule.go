@@ -12,5 +12,5 @@ type ScheduleService interface {
 	ReadById(id int) (*Schedule, error)
 	Create(schedule Schedule) error
 	Update(schedule Schedule) error
-	Delete(id int) error
+	Delete(id int) (string, error)
 }

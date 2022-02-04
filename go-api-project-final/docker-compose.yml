@@ -10,6 +10,10 @@ services:
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - discovery.type=single-node
+    # ulimits:
+    #   memlock:
+    #     soft: -1
+    #     hard: -1
     ports:
       - 5209:9200 
   mariadb:
@@ -31,6 +35,7 @@ services:
     command: redis-server --requirepass ${REDIS_PASSWORD} --appendonly yes
     ports:
       - 6379:6379
+
   # go-api:
   #   image: go-api:latest
   #   container_name: docker-compose-go-start-bot
@@ -51,3 +56,53 @@ volumes:
   elasticsearch-data:
 
 # parth /var/lib/docker/volumes
+
+  # kibana:
+  #   container_name: kibana
+  #   image: kibana:7.10.1
+  #   # ulimits:
+  #   #   memlock:
+  #   #     soft: -1
+  #   #     hard: -1
+  #   ports:
+  #     - 5601:5601
+  #   links:
+  #     - elasticsearch:elasticsearch
+  #   depends_on:
+  #     - elasticsearch
+  # logstash:
+  #   container_name: logstash
+  #   image: logstash:7.10.1
+  #   volumes:
+  #     - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+  #     - ./logstash.template.json:/usr/share/logstash/templates/logstash.template.json
+  #   # ulimits:
+  #   #   memlock:
+  #   #     soft: -1
+  #   #     hard: -1
+  #   ports:
+  #     - 5044:5044
+  #   links:
+  #     - elasticsearch:elasticsearch
+  #   depends_on:
+  #     - elasticsearch
+  # filebeat:
+  #   user: root
+  #   container_name: filebeat
+  #   image: docker.elastic.co/beats/filebeat:7.10.1
+  #   links:
+  #     - logstash:logstash
+  #   depends_on:
+  #     - logstash
+  #   volumes:
+  #     - /var/run/docker.sock:/host_docker/docker.sock
+  #     - /var/lib/docker:/host_docker/var/lib/docker
+  #     - ./mylog:/usr/share/filebeat/mylog
+  #     - ./filebeat.yml:/usr/share/filebeat/filebeat.yml
+  #   command: ["--strict.perms=false"]
+  #   # ulimits:
+  #     # memlock:
+  #     #   soft: -1
+  #     #   hard: -1
+
+

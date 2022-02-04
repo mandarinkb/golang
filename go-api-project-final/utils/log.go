@@ -1,11 +1,11 @@
-package main
+package utils
 
 import (
-	"fmt"
-
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
+
+var TypeWeb string = "web"
 
 func LogConf() (*zap.Logger, error) {
 	config := zap.NewProductionConfig()
@@ -27,16 +27,4 @@ func User(user string) zapcore.Field {
 }
 func Type(ty string) zapcore.Field {
 	return zap.String("typeLog", ty)
-}
-
-func main() {
-	logger, err := LogConf()
-	if err != nil {
-		logger.Error(err.Error())
-	}
-	defer logger.Sync()
-
-	const url = "http://example.com"
-	logger.Info("login", Url(url), User("mandarinkb"), Type("[bot]"))
-	fmt.Println("end")
 }

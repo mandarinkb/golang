@@ -1,1 +1,0 @@
-{"level":"info","ts":1643528030.9752178,"caller":"go-api-project-final/main.go:56","msg":"Failed to fetch URL.","url":"http://example.com","attempt":3,"backoff":1}

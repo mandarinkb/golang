@@ -42,8 +42,13 @@ func (sw switchDatabaseService) UpdateStatus(swDb SwitchDatabase) error {
 	return sw.swDatabaseRepo.UpdateStatus(mapDataSwDbRequest(swDb))
 }
 
-func (sw switchDatabaseService) Delete(id int) error {
-	return sw.swDatabaseRepo.Delete(id)
+func (sw switchDatabaseService) Delete(id int) (string, error) {
+	swDbRepo, err := sw.swDatabaseRepo.ReadById(id)
+	if err != nil {
+		return "", err
+	}
+	swDbRes := mapDataSwDbResponse(*swDbRepo)
+	return swDbRes.DatabaseName, sw.swDatabaseRepo.Delete(id)
 }
 
 // แปลงค่า เพื่อส่งไปยัง repository

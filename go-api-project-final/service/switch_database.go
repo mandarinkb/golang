@@ -12,5 +12,5 @@ type SwitchDatabaseService interface {
 	Create(swDb SwitchDatabase) error
 	Update(swDb SwitchDatabase) error
 	UpdateStatus(swDb SwitchDatabase) error
-	Delete(id int) error
+	Delete(id int) (string, error)
 }

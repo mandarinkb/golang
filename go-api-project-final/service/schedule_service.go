@@ -38,8 +38,13 @@ func (s scheduleService) Update(schedule Schedule) error {
 	return s.scheduleRepo.Update(mapDataScheduleRequest(schedule))
 }
 
-func (s scheduleService) Delete(id int) error {
-	return s.scheduleRepo.Delete(id)
+func (s scheduleService) Delete(id int) (string, error) {
+	scheduleRepo, err := s.scheduleRepo.ReadById(id)
+	if err != nil {
+		return "", err
+	}
+	scheduleRes := mapDataScheduleResponse(*scheduleRepo)
+	return scheduleRes.ScheduleName, s.scheduleRepo.Delete(id)
 }
 
 // แปลงค่า เพื่อส่งไปยัง repository
