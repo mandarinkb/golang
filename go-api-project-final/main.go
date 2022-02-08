@@ -38,6 +38,10 @@ func main() {
 	logServ := service.NewLogSystem(logRepo)
 	logHanler := handlers.NewLogHanler(logServ)
 
+	productRepo := repository.NewProductRepo()
+	productServ := service.NewProductServ(productRepo)
+	productHandler := handlers.NewProductHandler(productServ)
+
 	// set release mode
 	// using env:   export GIN_MODE=release
 	gin.SetMode(gin.ReleaseMode)
@@ -84,17 +88,12 @@ func main() {
 		v1.DELETE("/web/:id", webHandler.Delete)
 
 		v1.POST("/log", logHanler.Read)
+
+		v1.POST("/name", productHandler.GetSearch)
+		v1.POST("/name-and-filter", productHandler.GetFilterSearch)
+		v1.POST("/category", productHandler.GetCategory)
+		v1.POST("/history-name", productHandler.GetHistory)
+		v1.GET("/web-name", productHandler.GetWebName)
 	}
 	router.Run(":8080")
-
-	// dataRepo := repository.NewLogRepo()
-	// dataSrv, err := service.NewLogSystem(dataRepo).GetLogs("2022-02-03")
-	// if err != nil {
-	// 	fmt.Println(err)
-	// }
-	// json, err := json.Marshal(dataSrv)
-	// if err != nil {
-	// 	fmt.Println(err)
-	// }
-	// fmt.Println(string(json))
 }

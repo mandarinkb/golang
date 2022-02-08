@@ -11,6 +11,7 @@ type Web struct {
 type WebRepository interface {
 	Read() ([]Web, error)
 	ReadById(id int) (*Web, error)
+	ReadActivateWeb() ([]Web, error)
 	Create(web Web) error
 	Update(web Web) error
 	UpdateStatus(web Web) error

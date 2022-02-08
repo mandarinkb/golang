@@ -9,6 +9,7 @@ type SwitchDatabase struct {
 type SwitchDatabaseRepository interface {
 	Read() ([]SwitchDatabase, error)
 	ReadById(id int) (*SwitchDatabase, error)
+	ReadActivateSwitchDatabase() (*SwitchDatabase, error)
 	Create(swDb SwitchDatabase) error
 	Update(swDb SwitchDatabase) error
 	UpdateStatus(swDb SwitchDatabase) error

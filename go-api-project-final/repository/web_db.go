@@ -55,6 +55,31 @@ func (w webRepo) ReadById(id int) (*Web, error) {
 
 	return &web, nil
 }
+func (w webRepo) ReadActivateWeb() ([]Web, error) {
+	err := w.db.Ping()
+	if err != nil {
+		return nil, err
+	}
+
+	query := "SELECT * FROM WEB WHERE WEB_STATUS='1'"
+	rows, err := w.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	web := []Web{}
+	for rows.Next() {
+		dataWeb := Web{}
+		err = rows.Scan(&dataWeb.WebId, &dataWeb.WebName, &dataWeb.WebUrl, &dataWeb.WebStatus, &dataWeb.IconUrl)
+		if err != nil {
+			return nil, err
+		}
+		web = append(web, dataWeb)
+	}
+
+	return web, nil
+}
 func (w webRepo) Create(web Web) error {
 	err := w.db.Ping()
 	if err != nil {

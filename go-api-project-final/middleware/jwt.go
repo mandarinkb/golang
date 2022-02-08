@@ -71,7 +71,7 @@ func GetToken(r *http.Request) (string, error) {
 // สร้าง token
 func GenerateToken(user repository.User) (*TokenDetails, error) {
 	td := &TokenDetails{}
-	td.AtExpires = time.Now().Add(time.Minute * 10).Unix()
+	td.AtExpires = time.Now().Add(time.Minute * 2).Unix()
 	td.AccessUuid = uuid.New().String()
 
 	td.RtExpires = time.Now().Add(time.Hour * 24).Unix()

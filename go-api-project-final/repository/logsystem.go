@@ -79,10 +79,10 @@ func (LogSystem) GetLogs(date string) ([]LogSystem, error) {
 		return nil, err
 	}
 	// fmt.Println(string(body))
-	return getSource(string(body))
+	return getSourceLogs(string(body))
 }
 
-func getSource(body string) ([]LogSystem, error) {
+func getSourceLogs(body string) ([]LogSystem, error) {
 	// อ้างอิงจาก key โดยการใส่ dot ไปเรื่อยๆ
 	// กรณีข้อมูลเป็น json array ให้ใส่ # คั่นแล้วตามด้วย key ที่ต้องการ
 	source := gjson.Get(body, "hits.hits.#._source")

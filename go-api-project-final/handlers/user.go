@@ -34,9 +34,9 @@ func (h userHandler) Authenticate(c *gin.Context) {
 	// reqBody ชื่อ filed ในนี้จะต้องตรงกับ ค่า key ใน body ด้วย
 	var reqBody service.UserRequest
 	// แปลงค่าจาก body payload เป็น struct
-	err2 := c.BindJSON(&reqBody)
-	if err2 != nil {
-		logger.Error(err2.Error(), utils.Url(c.Request.URL.Path),
+	err = c.BindJSON(&reqBody)
+	if err != nil {
+		logger.Error(err.Error(), utils.Url(c.Request.URL.Path),
 			utils.User("-"), utils.Type(utils.TypeWeb))
 		c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
 		return
@@ -163,16 +163,16 @@ func (h userHandler) CreateUsers(c *gin.Context) {
 	// reqBody ชื่อ filed ในนี้จะต้องตรงกับ ค่า key ใน body ด้วย
 	var reqBody service.UserRequest
 	// แปลงค่าจาก body payload เป็น struct
-	err2 := c.BindJSON(&reqBody)
-	if err2 != nil {
-		logger.Error(err2.Error(), utils.Url(c.Request.URL.Path),
+	err = c.BindJSON(&reqBody)
+	if err != nil {
+		logger.Error(err.Error(), utils.Url(c.Request.URL.Path),
 			utils.User(middleware.Username), utils.Type(utils.TypeWeb))
 		c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
 		return
 	}
 	user, err := h.userSrv.Create(reqBody)
 	if err != nil {
-		logger.Error(err2.Error(), utils.Url(c.Request.URL.Path),
+		logger.Error(err.Error(), utils.Url(c.Request.URL.Path),
 			utils.User(middleware.Username), utils.Type(utils.TypeWeb))
 		c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
 		return
@@ -193,9 +193,9 @@ func (h userHandler) UpdateUsers(c *gin.Context) {
 	defer logger.Sync()
 
 	var reqBody service.UserRequest
-	err2 := c.BindJSON(&reqBody)
-	if err2 != nil {
-		logger.Error(err2.Error(), utils.Url(c.Request.URL.Path),
+	err = c.BindJSON(&reqBody)
+	if err != nil {
+		logger.Error(err.Error(), utils.Url(c.Request.URL.Path),
 			utils.User(middleware.Username), utils.Type(utils.TypeWeb))
 		c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
 		return

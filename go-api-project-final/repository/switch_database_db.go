@@ -55,6 +55,23 @@ func (s switchDBRepo) ReadById(id int) (*SwitchDatabase, error) {
 
 	return &swDB, nil
 }
+func (s switchDBRepo) ReadActivateSwitchDatabase() (*SwitchDatabase, error) {
+	err := s.db.Ping()
+	if err != nil {
+		return nil, err
+	}
+
+	query := "SELECT * FROM SWITCH_DATABASE WHERE DATABASE_STATUS ='1'"
+	row := s.db.QueryRow(query)
+
+	swDB := SwitchDatabase{}
+	err = row.Scan(&swDB.DatabaseId, &swDB.DatabaseName, &swDB.DatabaseStatus)
+	if err != nil {
+		return nil, err
+	}
+
+	return &swDB, nil
+}
 func (s switchDBRepo) Create(swDb SwitchDatabase) error {
 	err := s.db.Ping()
 	if err != nil {

@@ -15,7 +15,14 @@ var Username string
 
 func JWTAuth(c *gin.Context) {
 	// กำหนด path ที่ไม่ต้องทำการ authenticate
-	permitPath := NewPermitPathConfig(c).Path("/v1/authenticate", "/v1/token/refresh")
+	permitPath := NewPermitPathConfig(c).
+		Path("/v1/authenticate",
+			"/v1/token/refresh",
+			"/v1/name",
+			"/v1/name-and-filter",
+			"/v1/category",
+			"/v1/history-name",
+			"/v1/web-name")
 	// กรณีที่เซ็ต path ที่ไม่ต้อง authenticate ไว้
 	// ไปทำคำสั่ง handler func อื่นต่อได้เลย
 	if permitPath {
@@ -86,7 +93,7 @@ func JWTRefresh(c *gin.Context) {
 	if err := c.ShouldBindJSON(&mapToken); err != nil {
 		logger.Error(err.Error(), utils.Url(c.Request.URL.Path),
 			utils.User("-"), utils.Type(utils.TypeWeb))
-		c.IndentedJSON(http.StatusUnprocessableEntity, gin.H{"message": err.Error()})
+		c.IndentedJSON(http.StatusUnauthorized, gin.H{"message": err.Error()})
 		return
 	}
 	// กำหนดค่า key เป็น refresh_token
@@ -120,7 +127,7 @@ func JWTRefresh(c *gin.Context) {
 	if err != nil {
 		logger.Error(err.Error(), utils.Url(c.Request.URL.Path),
 			utils.User(claimsDetail.Subject), utils.Type(utils.TypeWeb))
-		c.IndentedJSON(http.StatusUnprocessableEntity, gin.H{"message": err.Error()})
+		c.IndentedJSON(http.StatusUnauthorized, gin.H{"message": err.Error()})
 		return
 	}
 	// เซ็ตค่า เพื่อส่ง token แสดงผ่าน api
