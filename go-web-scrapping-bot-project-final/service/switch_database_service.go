@@ -32,6 +32,14 @@ func NewSwitchDatabaseService(swDbRepo repository.SwitchDatabaseRepository) Swit
 	return switchDatabaseService{swDbRepo}
 }
 func (s switchDatabaseService) ProdudtDetail(web Web) error {
+	logger, err := utils.LogConf()
+	if err != nil {
+		logger.Error(err.Error(), utils.Url("-"),
+			utils.User("-"), utils.Type(utils.TypeBot))
+	}
+	// close log
+	defer logger.Sync()
+
 	var products Product
 	var img string
 	var priceAll string
@@ -79,26 +87,33 @@ func (s switchDatabaseService) ProdudtDetail(web Web) error {
 		}
 		jsonProducts, err := json.Marshal(products)
 		if err != nil {
-			fmt.Println(err)
+			logger.Error(err.Error(), utils.Url("-"),
+				utils.User("-"), utils.Type(utils.TypeBot))
 		}
 		dbRepo, err := s.swDbRepo.GetDatabaseName()
 		if err != nil {
-			fmt.Println(err)
+			logger.Error(err.Error(), utils.Url("-"),
+				utils.User("-"), utils.Type(utils.TypeBot))
 		}
 		dbname := dbRepo.DatabaseName
 
-		insertToElasticsearch(dbname, string(jsonProducts))
+		err = insertToElasticsearch(dbname, string(jsonProducts))
+		if err != nil {
+			logger.Error(err.Error(), utils.Url("-"),
+				utils.User("-"), utils.Type(utils.TypeBot))
+		}
 		fmt.Println(time.Now().Format(time.RFC3339), " : ", "lotus : ", name)
 	})
 
 	// start scraping (ไว้ล่างสุด)
-	err := c.Visit(web.WebUrl)
+	err = c.Visit(web.WebUrl)
 	if err != nil {
-		fmt.Println(err)
+		logger.Error(err.Error(), utils.Url("-"),
+			utils.User("-"), utils.Type(utils.TypeBot))
 	}
 	return nil
 }
-func insertToElasticsearch(dbName string, product string) {
+func insertToElasticsearch(dbName string, product string) error {
 
 	url := elasticsearchUrl + "/" + dbName + "/txt"
 	method := "POST"
@@ -109,15 +124,14 @@ func insertToElasticsearch(dbName string, product string) {
 	req, err := http.NewRequest(method, url, payload)
 
 	if err != nil {
-		fmt.Println(err)
-		return
+		return err
 	}
 	req.Header.Add("Content-Type", "application/json")
 
 	res, err := client.Do(req)
 	if err != nil {
-		fmt.Println(err)
-		return
+		return err
 	}
 	defer res.Body.Close()
+	return nil
 }

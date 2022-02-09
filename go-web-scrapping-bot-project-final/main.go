@@ -9,6 +9,7 @@ import (
 	"github.com/mandarinkb/go-web-scrapping-bot-project-final/database"
 	"github.com/mandarinkb/go-web-scrapping-bot-project-final/repository"
 	"github.com/mandarinkb/go-web-scrapping-bot-project-final/service"
+	"github.com/mandarinkb/go-web-scrapping-bot-project-final/utils"
 	"github.com/robfig/cron/v3"
 )
 
@@ -21,7 +22,18 @@ func cronJob() {
 	c.Start()
 }
 func run() {
-	fmt.Println(time.Now(), "webscrapping bot start")
+	logger, err := utils.LogConf()
+	if err != nil {
+		logger.Error(err.Error(), utils.Url("-"),
+			utils.User("-"), utils.Type(utils.TypeBot))
+	}
+	// close log
+	defer logger.Sync()
+
+	logger.Info("[web scrapping bot] start", utils.Url("-"),
+		utils.User("-"), utils.Type(utils.TypeBot))
+	fmt.Println(time.Now(), "web scrapping bot start")
+
 	redis := database.RedisConn()
 	defer redis.Close()
 	rWeb := service.Web{}
@@ -30,7 +42,8 @@ func run() {
 	for checkStartUrl {
 		detail, err := redis.RPop(context.Background(), "detailUrl").Result() //detail
 		if err != nil {
-			fmt.Println(err)
+			logger.Error(err.Error(), utils.Url("-"),
+				utils.User("-"), utils.Type(utils.TypeBot))
 			checkStartUrl = false
 		}
 		if detail != "" {
@@ -47,12 +60,23 @@ func run() {
 			// }
 		}
 	}
-	fmt.Println(time.Now(), "webscrapping bot stop")
+	logger.Info("[web scrapping bot] stop", utils.Url("-"),
+		utils.User("-"), utils.Type(utils.TypeBot))
+	fmt.Println(time.Now(), "web scrapping bot stop")
 }
 func webscrapping(web service.Web) {
+	logger, err := utils.LogConf()
+	if err != nil {
+		logger.Error(err.Error(), utils.Url("-"),
+			utils.User("-"), utils.Type(utils.TypeBot))
+	}
+	// close log
+	defer logger.Sync()
+
 	db, err := database.Conn()
 	if err != nil {
-		fmt.Print(err)
+		logger.Error(err.Error(), utils.Url("-"),
+			utils.User("-"), utils.Type(utils.TypeBot))
 	}
 	defer db.Close()
 	swRepo := repository.NewSwitchDatabaseDB(db)

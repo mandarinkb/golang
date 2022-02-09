@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"time"
 	"unicode/utf8"
 
 	"github.com/gin-gonic/gin"
@@ -34,7 +33,6 @@ func trimTwoLetterPrefix(cron string) string {
 
 // สั่งให้ bot ทำงาน
 func startBot() {
-	fmt.Println(time.Now(), "start bot start")
 	db, err := database.Conn()
 	if err != nil {
 		fmt.Print(err)

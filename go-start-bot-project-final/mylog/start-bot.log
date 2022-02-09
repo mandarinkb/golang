@@ -1,0 +1,5 @@
+{"level":"info","timestamp":"2022-02-10T01:06:00.000+0700","caller":"service/web_service.go:31","msg":"[start bot] start","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-02-10T01:06:00.005+0700","caller":"service/web_service.go:83","msg":"clear data in redis","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-02-10T01:06:00.064+0700","caller":"service/web_service.go:97","msg":"swap database in elasticsearch","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-02-10T01:06:00.198+0700","caller":"service/web_service.go:112","msg":"clear data in web-scrapping-db-1","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-02-10T01:06:00.204+0700","caller":"service/web_service.go:63","msg":"[start bot] stop","url":"-","user":"-","typeLog":"bot"}

@@ -8,6 +8,7 @@ import (
 
 	"github.com/mandarinkb/go-fetch-url-bot-project-final/database"
 	"github.com/mandarinkb/go-fetch-url-bot-project-final/service"
+	"github.com/mandarinkb/go-fetch-url-bot-project-final/utils"
 	"github.com/robfig/cron/v3"
 )
 
@@ -20,6 +21,17 @@ func cronJob() {
 	c.Start()
 }
 func run() {
+	logger, err := utils.LogConf()
+	if err != nil {
+		logger.Error(err.Error(), utils.Url("-"),
+			utils.User("-"), utils.Type(utils.TypeBot))
+	}
+	// close log
+	defer logger.Sync()
+
+	logger.Info("[fetch url bot] start", utils.Url("-"),
+		utils.User("-"), utils.Type(utils.TypeBot))
+
 	fmt.Println(time.Now(), "fetch url bot start")
 	redis := database.RedisConn()
 	defer redis.Close()
@@ -30,7 +42,8 @@ func run() {
 	for checkStartUrl {
 		startUrl, err := redis.RPop(context.Background(), "startUrl").Result()
 		if err != nil {
-			fmt.Println("checkStartUrl : ", err)
+			logger.Error(err.Error(), utils.Url("-"),
+				utils.User("-"), utils.Type(utils.TypeBot))
 			checkStartUrl = false
 		}
 		if startUrl != "" {
@@ -69,6 +82,8 @@ func run() {
 		}
 
 	}
+	logger.Info("[fetch url bot] stop", utils.Url("-"),
+		utils.User("-"), utils.Type(utils.TypeBot))
 	fmt.Println(time.Now(), "fetch url bot stop")
 }
 
