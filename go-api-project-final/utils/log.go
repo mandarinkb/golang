@@ -9,7 +9,10 @@ var TypeWeb string = "web"
 
 func LogConf() (*zap.Logger, error) {
 	config := zap.NewProductionConfig()
-	config.OutputPaths = []string{"./mylog/project-final.log"}
+	// [for production] กรณี build ขึ้น docker จะเก็บไว้ที่ /home ใน container
+	// config.OutputPaths = []string{"../home/go-api-project-final.log"}
+	// [for vscode run]
+	config.OutputPaths = []string{"./mylog/go-api-project-final.log"}
 	config.EncoderConfig.TimeKey = "timestamp"
 	config.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
 	logger, err := config.Build()

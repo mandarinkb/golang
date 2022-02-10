@@ -9,7 +9,10 @@ import (
 
 func LogConf() (*zap.Logger, error) {
 	config := zap.NewProductionConfig()
-	config.OutputPaths = []string{"./mylog/project-final.log"}
+	// [for production] กรณี build ขึ้น docker จะเก็บไว้ที่ /home ใน container
+	// config.OutputPaths = []string{"../home/go-zap-logs.log"}
+	// [for vscode run]
+	config.OutputPaths = []string{"./mylog/go-zap-logs.log"}
 	config.EncoderConfig.TimeKey = "timestamp"
 	config.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
 	logger, err := config.Build()
@@ -37,6 +40,6 @@ func main() {
 	defer logger.Sync()
 
 	const url = "http://example.com"
-	logger.Info("login", Url(url), User("mandarinkb"), Type("[bot]"))
+	logger.Info("login", Url(url), User("mandarinkb"), Type("[demo]"))
 	fmt.Println("end")
 }

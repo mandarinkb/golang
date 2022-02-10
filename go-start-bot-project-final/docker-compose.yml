@@ -1,13 +1,15 @@
 version: '3.5'
 services:  
-  # go-start-bot:
-  #   image: go-start-bot:1.0
-  #   ports:
-  #     - 8081:8081
+  go-start-bot:
+    image: go-start-bot:1.5
+    volumes:
+      - ./mylog:/home
+    ports:
+      - 8081:8081
   # go-fetcu-url-bot:
   #   image: go-fetch-url-bot:1.0
-  go-web-scrapping-bot:
-    image: go-web-scrapping-bot:1.0
+  # go-web-scrapping-bot:
+  #   image: go-web-scrapping-bot:1.0
 networks: 
   default: 
     external: 
