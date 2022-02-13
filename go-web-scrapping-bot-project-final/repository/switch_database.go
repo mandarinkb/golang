@@ -7,5 +7,5 @@ type SwitchDatabase struct {
 }
 
 type SwitchDatabaseRepository interface {
-	GetDatabaseName() (*SwitchDatabase, error)
+	GetInActivateDatabaseName() (*SwitchDatabase, error)
 }

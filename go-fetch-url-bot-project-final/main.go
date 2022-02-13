@@ -32,59 +32,62 @@ func run() {
 	logger.Info("[fetch url bot] start", utils.Url("-"),
 		utils.User("-"), utils.Type(utils.TypeBot))
 
-	fmt.Println(time.Now(), "fetch url bot start")
+	fmt.Println(time.Now(), " : fetch url bot start")
 	redis := database.RedisConn()
 	defer redis.Close()
 
-	data := service.Web{}
+	webData := service.Web{}
 	// จัดการหมวดหมู่สินค้าใหม่
 	checkStartUrl := true
 	for checkStartUrl {
 		startUrl, err := redis.RPop(context.Background(), "startUrl").Result()
 		if err != nil {
-			logger.Error(err.Error(), utils.Url("-"),
-				utils.User("-"), utils.Type(utils.TypeBot))
 			checkStartUrl = false
 		}
 		if startUrl != "" {
-			json.Unmarshal([]byte(startUrl), &data)
-			switch data.WebName {
-			case "tescolotus":
-				service.MainPage(data)
-			case "makroclick":
-				fmt.Println("makroclick")
-			case "bigc":
-				fmt.Println("bigc")
-
+			err = json.Unmarshal([]byte(startUrl), &webData)
+			if err != nil {
+				logger.Error(err.Error(), utils.Url("-"),
+					utils.User("-"), utils.Type(utils.TypeBot))
+				checkStartUrl = false
+			}
+			if webData.WebStatus == "1" {
+				switch webData.WebName {
+				case "tescolotus":
+					service.TescolotusMainPage(webData)
+				case "makroclick":
+					service.MakroMainPage(webData)
+				case "bigc":
+					service.BigcMainPage(webData)
+				}
 			}
 		}
-
 	}
 	// หา url ของสินค้าในแต่ละหมวดหมู่ โดยจะหาทุกๆหน้า
 	checkFetchUrl := true
 	for checkFetchUrl {
 		fetchUrl, err := redis.RPop(context.Background(), "fetchUrl").Result()
 		if err != nil {
-			fmt.Println(err)
 			checkFetchUrl = false
 		}
 		if fetchUrl != "" {
-			json.Unmarshal([]byte(fetchUrl), &data)
-			switch data.WebName {
-			case "tescolotus":
-				service.FindUrlInPage(data)
-			case "makroclick":
-				fmt.Println("makroclick")
-			case "bigc":
-				fmt.Println("bigc")
-
+			json.Unmarshal([]byte(fetchUrl), &webData)
+			if webData.WebStatus == "1" {
+				switch webData.WebName {
+				case "tescolotus":
+					service.TescolotusFindUrlInPage(webData)
+				case "makroclick":
+					service.MakroFindUrlInPage(webData)
+				case "bigc":
+					service.BigcFindUrlInPage(webData)
+				}
 			}
 		}
-
 	}
+
 	logger.Info("[fetch url bot] stop", utils.Url("-"),
 		utils.User("-"), utils.Type(utils.TypeBot))
-	fmt.Println(time.Now(), "fetch url bot stop")
+	fmt.Println(time.Now(), " : fetch url bot stop")
 }
 
 func main() {
@@ -93,8 +96,10 @@ func main() {
 	for {
 		time.Sleep(time.Second)
 	}
+
 }
 
+// #######tesco lotus########
 // ผลิตภัณฑ์เพื่อสุขภาพ & ความงาม
 // เครื่องดื่ม, ขนมขบเคี้ยว & ของหวาน
 // ผลิตภัณฑ์ทำความสะอาดในครัวเรือน
@@ -108,15 +113,43 @@ func main() {
 // เสื้อผ้าเครื่องแต่งกาย
 // ดูทั้งหมด
 
-//
-//
-//
-//
-//
-//
-// สินค้าอื่นๆ
-//
-//
-// เทศกาลต้อนรับเปิดเทอม
-//
-// ดูทั้งหมด
+// ########bigc########
+//   โปรโมชั่นโบรชัวร์
+//   พร้อมรับมือ โควิด-19
+//   สินค้าส่งด่วน 1 ชม.
+//   ร้านค้าส่ง
+//   สินค้าเฉพาะบิ๊กซี
+//   อาหารสด, แช่แข็ง/ ผักผลไม้
+//   อาหารแห้ง/ เครื่องปรุง
+//   เครื่องดื่ม/ ขนมขบเคี้ยว
+//   สุขภาพและความงาม
+//   แม่และเด็ก
+//   ของใช้ในครัวเรือน/ สัตว์เลี้ยง
+//   เครื่องใช้ไฟฟ้า/ อุปกรณ์อิเล็กทรอนิกส์
+//   บ้านและไลฟ์สไตล์
+//   เครื่องเขียน/ อุปกรณ์สำนักงาน
+//   เสื้อผ้า/ เครื่องประดับ
+//   ร้านเพรียวฟาร์มาซี
+//   สินค้าแบรนด์เบสิโค
+
+// #######makro#########
+// ผักและผลไม้
+// เนื้อสัตว์
+// ปลาและอาหารทะเล
+// ไข่ นม เนย ชีส
+// ผลิตภัณฑ์แปรรูปแช่เย็น
+// ผลิตภัณฑ์เนื้อสัตว์แปรรูป
+// อาหารแช่แข็ง
+// เบเกอรีและวัตถุดิบสำหรับทำเบเกอรี
+// อาหารแห้ง
+// เครื่องดื่มและขนมขบเคี้ยว
+// อุปกรณ์และของใช้ในครัวเรือน
+// ผลิตภัณฑ์ทำความสะอาด
+// เครื่องเขียนและอุปกรณ์สำนักงาน
+// เครื่องใช้ไฟฟ้า
+// สุขภาพและความงาม
+// สมาร์ทและไลฟ์สไตล์
+// แม่และเด็ก
+// ผลิตภัณฑ์สำหรับสัตว์เลี้ยง
+// Own Brand
+// สินค้าสั่งพิเศษ และสินค้าเทศกาล

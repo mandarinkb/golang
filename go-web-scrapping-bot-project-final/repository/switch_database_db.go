@@ -12,12 +12,12 @@ func NewSwitchDatabaseDB(db *sql.DB) SwitchDatabaseRepository {
 	return switchDatabaseDB{db}
 }
 
-func (s switchDatabaseDB) GetDatabaseName() (*SwitchDatabase, error) {
+func (s switchDatabaseDB) GetInActivateDatabaseName() (*SwitchDatabase, error) {
 	err := s.db.Ping()
 	if err != nil {
 		return nil, err
 	}
-	query := "SELECT DATABASE_NAME FROM SWITCH_DATABASE WHERE DATABASE_STATUS='1'"
+	query := "SELECT DATABASE_NAME FROM SWITCH_DATABASE WHERE DATABASE_STATUS='0'"
 	rows, err := s.db.Query(query)
 	if err != nil {
 		return nil, err

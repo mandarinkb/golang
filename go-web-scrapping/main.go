@@ -21,22 +21,23 @@ func main() {
 
 	start := time.Now().Format(time.RFC3339)
 
-	// makro, err := repository.NewMakro().Makro()
+	makro, err := repository.NewMakro().Makro()
+	if err != nil {
+		fmt.Println(err)
+	}
+	_ = makro
+
+	// bigc, err := repository.NewBigC().Bigc()
 	// if err != nil {
 	// 	fmt.Println(err)
 	// }
+	// _ = bigc
 
-	bigc, err := repository.NewBigC().Bigc()
-	if err != nil {
-		fmt.Println(err)
-	}
-	_ = bigc
-
-	lotus, err := repository.NewLotus().Lotus()
-	if err != nil {
-		fmt.Println(err)
-	}
-	_ = lotus
+	// lotus, err := repository.NewLotus().Lotus()
+	// if err != nil {
+	// 	fmt.Println(err)
+	// }
+	// _ = lotus
 
 	end := time.Now().Format(time.RFC3339)
 	fmt.Println("start : ", start)

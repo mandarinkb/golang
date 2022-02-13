@@ -12,19 +12,10 @@ import (
 	"github.com/mandarinkb/go-fetch-url-bot-project-final/utils"
 )
 
-type Web struct {
-	WebId     int    `json:"webId"`
-	WebName   string `json:"webName"`
-	WebUrl    string `json:"webUrl"`
-	WebStatus string `json:"webStatus"`
-	IconUrl   string `json:"iconUrl"`
-	Category  string `json:"category"`
-}
-
 var baseUrlTescolotus string = "https://shoponline.tescolotus.com"
 
 // หน้าแรกของเว็บใซต์
-func MainPage(web Web) {
+func TescolotusMainPage(web Web) {
 	logger, err := utils.LogConf()
 	if err != nil {
 		logger.Error(err.Error(), utils.Url("-"),
@@ -51,14 +42,12 @@ func MainPage(web Web) {
 			// ไม่เอาหมวดหมู่สินค้าที่ได้ตั้งค่าไว้
 			if !detectNotTakeCategory {
 				// จัดหมวดหมู่ใหม่
-				newCategory, err := repository.NewCategory(category)
+				newCategory, err := repository.GetNewCategory(category)
 				if err != nil {
 					logger.Error(err.Error(), utils.Url("-"),
 						utils.User("-"), utils.Type(utils.TypeBot))
 				}
 				web.Category = newCategory
-				fmt.Println(category)
-				fmt.Println("new => ", newCategory)
 				// ดึง url หน้ารายละเอียด
 				web.WebUrl = baseUrlTescolotus + el.ChildAttr("a", "href")
 				categoryAllPage(web)
@@ -131,7 +120,7 @@ func categoryAllPage(web Web) {
 }
 
 //
-func FindUrlInPage(web Web) {
+func TescolotusFindUrlInPage(web Web) {
 	logger, err := utils.LogConf()
 	if err != nil {
 		logger.Error(err.Error(), utils.Url("-"),

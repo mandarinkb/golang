@@ -30,7 +30,7 @@ func (w webService) Read() error {
 
 	logger.Info("[start bot] start", utils.Url("-"),
 		utils.User("-"), utils.Type(utils.TypeBot))
-	fmt.Println(time.Now(), "start bot start")
+	fmt.Println(time.Now(), " : start bot start")
 
 	err = clearOldData()
 	if err != nil {
@@ -58,7 +58,7 @@ func (w webService) Read() error {
 		}
 		redis.RPush(context.Background(), "startUrl", string(webStr))
 	}
-	fmt.Println(time.Now(), "start bot stop")
+	fmt.Println(time.Now(), " : start bot stop")
 
 	logger.Info("[start bot] stop", utils.Url("-"),
 		utils.User("-"), utils.Type(utils.TypeBot))
@@ -104,7 +104,6 @@ func clearOldData() error {
 	}
 
 	// ลบ index ใน elasticsearch
-	fmt.Println("delete index : ", InActavateDb.DatabaseName)
 	err = repository.DeleteIndex(InActavateDb.DatabaseName)
 	if err != nil {
 		return err

@@ -27,7 +27,7 @@ func init() {
 	elasticsearchUrl = config.Elasticsearch
 }
 
-func NewCategory(category string) (string, error) {
+func GetNewCategory(category string) (string, error) {
 	// url := "http://127.0.0.1/elasticsearch/web_scrapping_categories/_search"
 	url := elasticsearchUrl + "/web_scrapping_categories/_search"
 	method := "POST"

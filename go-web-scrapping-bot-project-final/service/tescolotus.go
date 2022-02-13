@@ -3,9 +3,7 @@ package service
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"math"
-	"net/http"
 	"strings"
 	"time"
 
@@ -14,24 +12,14 @@ import (
 	"github.com/mandarinkb/go-web-scrapping-bot-project-final/utils"
 )
 
-var elasticsearchUrl string
-
-func init() {
-	config, err := utils.LoadConfig(".")
-	if err != nil {
-		log.Fatal("cannot load config:", err)
-	}
-	elasticsearchUrl = config.Elasticsearch
-}
-
-type switchDatabaseService struct {
+type productService struct {
 	swDbRepo repository.SwitchDatabaseRepository
 }
 
-func NewSwitchDatabaseService(swDbRepo repository.SwitchDatabaseRepository) SwitchDatabaseService {
-	return switchDatabaseService{swDbRepo}
+func NewProductService(swDbRepo repository.SwitchDatabaseRepository) ProductService {
+	return productService{swDbRepo}
 }
-func (s switchDatabaseService) ProdudtDetail(web Web) error {
+func (s productService) Tescolotus(web Web) error {
 	logger, err := utils.LogConf()
 	if err != nil {
 		logger.Error(err.Error(), utils.Url("-"),
@@ -90,7 +78,7 @@ func (s switchDatabaseService) ProdudtDetail(web Web) error {
 			logger.Error(err.Error(), utils.Url("-"),
 				utils.User("-"), utils.Type(utils.TypeBot))
 		}
-		dbRepo, err := s.swDbRepo.GetDatabaseName()
+		dbRepo, err := s.swDbRepo.GetInActivateDatabaseName()
 		if err != nil {
 			logger.Error(err.Error(), utils.Url("-"),
 				utils.User("-"), utils.Type(utils.TypeBot))
@@ -111,27 +99,5 @@ func (s switchDatabaseService) ProdudtDetail(web Web) error {
 		logger.Error(err.Error(), utils.Url("-"),
 			utils.User("-"), utils.Type(utils.TypeBot))
 	}
-	return nil
-}
-func insertToElasticsearch(dbName string, product string) error {
-
-	url := elasticsearchUrl + "/" + dbName + "/txt"
-	method := "POST"
-
-	payload := strings.NewReader(product)
-
-	client := &http.Client{}
-	req, err := http.NewRequest(method, url, payload)
-
-	if err != nil {
-		return err
-	}
-	req.Header.Add("Content-Type", "application/json")
-
-	res, err := client.Do(req)
-	if err != nil {
-		return err
-	}
-	defer res.Body.Close()
 	return nil
 }

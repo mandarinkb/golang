@@ -30,57 +30,45 @@ func run() {
 	// close log
 	defer logger.Sync()
 
-	logger.Info("[web scrapping bot] start", utils.Url("-"),
-		utils.User("-"), utils.Type(utils.TypeBot))
-	fmt.Println(time.Now(), "web scrapping bot start")
-
-	redis := database.RedisConn()
-	defer redis.Close()
-	rWeb := service.Web{}
-
-	checkStartUrl := true
-	for checkStartUrl {
-		detail, err := redis.RPop(context.Background(), "detailUrl").Result() //detail
-		if err != nil {
-			logger.Error(err.Error(), utils.Url("-"),
-				utils.User("-"), utils.Type(utils.TypeBot))
-			checkStartUrl = false
-		}
-		if detail != "" {
-			json.Unmarshal([]byte(detail), &rWeb)
-			switch rWeb.WebName {
-			case "tescolotus":
-				webscrapping(rWeb)
-			}
-			// case "makroclick":
-			// 	fmt.Println("makroclick")
-			// case "bigc":
-			// 	fmt.Println("bigc")
-
-			// }
-		}
-	}
-	logger.Info("[web scrapping bot] stop", utils.Url("-"),
-		utils.User("-"), utils.Type(utils.TypeBot))
-	fmt.Println(time.Now(), "web scrapping bot stop")
-}
-func webscrapping(web service.Web) {
-	logger, err := utils.LogConf()
-	if err != nil {
-		logger.Error(err.Error(), utils.Url("-"),
-			utils.User("-"), utils.Type(utils.TypeBot))
-	}
-	// close log
-	defer logger.Sync()
-
 	db, err := database.Conn()
 	if err != nil {
 		logger.Error(err.Error(), utils.Url("-"),
 			utils.User("-"), utils.Type(utils.TypeBot))
 	}
 	defer db.Close()
-	swRepo := repository.NewSwitchDatabaseDB(db)
-	service.NewSwitchDatabaseService(swRepo).ProdudtDetail(web)
+
+	logger.Info("[web scrapping bot] start", utils.Url("-"),
+		utils.User("-"), utils.Type(utils.TypeBot))
+	fmt.Println(time.Now(), "web scrapping bot start")
+
+	redis := database.RedisConn()
+	defer redis.Close()
+	webData := service.Web{}
+
+	checkStartUrl := true
+	for checkStartUrl {
+		detail, err := redis.RPop(context.Background(), "detailUrl").Result() //detail
+		if err != nil {
+			checkStartUrl = false
+		}
+		if detail != "" {
+			json.Unmarshal([]byte(detail), &webData)
+			if webData.WebStatus == "1" {
+				switch webData.WebName {
+				case "tescolotus":
+					swRepo := repository.NewSwitchDatabaseDB(db)
+					service.NewProductService(swRepo).Tescolotus(webData)
+				case "makroclick":
+					service.Makroclick(webData)
+				case "bigc":
+					service.Bigc(webData)
+				}
+			}
+		}
+	}
+	logger.Info("[web scrapping bot] stop", utils.Url("-"),
+		utils.User("-"), utils.Type(utils.TypeBot))
+	fmt.Println(time.Now(), "web scrapping bot stop")
 }
 
 func main() {

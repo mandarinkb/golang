@@ -10,10 +10,10 @@ func NewSwitchDatabaseMock() SwitchDatabaseRepository {
 	return switchDatabaseMock{
 		DatabaseId:     1,
 		DatabaseName:   "web-scrapping-db-1",
-		DatabaseStatus: "1"}
+		DatabaseStatus: "0"}
 }
 
-func (s switchDatabaseMock) GetDatabaseName() (*SwitchDatabase, error) {
+func (s switchDatabaseMock) GetInActivateDatabaseName() (*SwitchDatabase, error) {
 	swData := SwitchDatabase{
 		DatabaseId:     s.DatabaseId,
 		DatabaseName:   s.DatabaseName,
