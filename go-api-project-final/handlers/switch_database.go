@@ -56,7 +56,7 @@ func (s switchDatabaseHandler) ReadById(c *gin.Context) {
 	if err != nil {
 		logger.Error(err.Error(), utils.Url(c.Request.URL.Path),
 			utils.User(middleware.Username), utils.Type(utils.TypeWeb))
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 	swDb, err := s.swDbServ.ReadById(id)
@@ -87,7 +87,7 @@ func (s switchDatabaseHandler) Create(c *gin.Context) {
 	if err != nil {
 		logger.Error(err.Error(), utils.Url(c.Request.URL.Path),
 			utils.User(middleware.Username), utils.Type(utils.TypeWeb))
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 	err = s.swDbServ.Create(reqBody)
@@ -118,7 +118,7 @@ func (s switchDatabaseHandler) Update(c *gin.Context) {
 	if err != nil {
 		logger.Error(err.Error(), utils.Url(c.Request.URL.Path),
 			utils.User(middleware.Username), utils.Type(utils.TypeWeb))
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 	err = s.swDbServ.Update(reqBody)
@@ -149,7 +149,7 @@ func (s switchDatabaseHandler) UpdateStatus(c *gin.Context) {
 	if err != nil {
 		logger.Error(err.Error(), utils.Url(c.Request.URL.Path),
 			utils.User(middleware.Username), utils.Type(utils.TypeWeb))
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 	err = s.swDbServ.UpdateStatus(reqBody)
@@ -180,7 +180,7 @@ func (s switchDatabaseHandler) Delete(c *gin.Context) {
 	if err != nil {
 		logger.Error(err.Error(), utils.Url(c.Request.URL.Path),
 			utils.User(middleware.Username), utils.Type(utils.TypeWeb))
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 	dbName, err := s.swDbServ.Delete(id)

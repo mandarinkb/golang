@@ -56,7 +56,7 @@ func (s scheduleHandler) ReadById(c *gin.Context) {
 	if err != nil {
 		logger.Error(err.Error(), utils.Url(c.Request.URL.Path),
 			utils.User(middleware.Username), utils.Type(utils.TypeWeb))
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 	schedule, err := s.scheduleServ.ReadById(id)
@@ -87,7 +87,7 @@ func (s scheduleHandler) Create(c *gin.Context) {
 	if err != nil {
 		logger.Error(err.Error(), utils.Url(c.Request.URL.Path),
 			utils.User(middleware.Username), utils.Type(utils.TypeWeb))
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 	err = s.scheduleServ.Create(reqBody)
@@ -118,7 +118,7 @@ func (s scheduleHandler) Update(c *gin.Context) {
 	if err != nil {
 		logger.Error(err.Error(), utils.Url(c.Request.URL.Path),
 			utils.User(middleware.Username), utils.Type(utils.TypeWeb))
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 	err = s.scheduleServ.Update(reqBody)
@@ -149,7 +149,7 @@ func (s scheduleHandler) Delete(c *gin.Context) {
 	if err != nil {
 		logger.Error(err.Error(), utils.Url(c.Request.URL.Path),
 			utils.User(middleware.Username), utils.Type(utils.TypeWeb))
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 	scheduleName, err := s.scheduleServ.Delete(id)

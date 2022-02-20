@@ -37,7 +37,7 @@ func (p productHandler) GetSearch(c *gin.Context) {
 	if err != nil {
 		logger.Error(err.Error(), utils.Url(c.Request.URL.Path),
 			utils.User(reqBody.UserId), utils.Type(typeApp))
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 	searchData, err := p.productSrv.GetSearch(from, reqBody.Name)
@@ -70,7 +70,7 @@ func (p productHandler) GetFilterSearch(c *gin.Context) {
 	if err != nil {
 		logger.Error(err.Error(), utils.Url(c.Request.URL.Path),
 			utils.User(reqBody.UserId), utils.Type(typeApp))
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 	filterSearchData, err := p.productSrv.
@@ -104,7 +104,7 @@ func (p productHandler) GetCategory(c *gin.Context) {
 	if err != nil {
 		logger.Error(err.Error(), utils.Url(c.Request.URL.Path),
 			utils.User(reqBody.UserId), utils.Type(typeApp))
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 	categoryData, err := p.productSrv.GetCategory(from, reqBody.Category, reqBody.WebName)
@@ -136,7 +136,7 @@ func (p productHandler) GetHistory(c *gin.Context) {
 	if err != nil {
 		logger.Error(err.Error(), utils.Url(c.Request.URL.Path),
 			utils.User(reqBody.UserId), utils.Type(typeApp))
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 	historyData, err := p.productSrv.GetHistory(from, reqBody.History)

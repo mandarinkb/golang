@@ -35,17 +35,19 @@ services:
     command: redis-server --requirepass ${REDIS_PASSWORD} --appendonly yes
     ports:
       - 6379:6379
-  # go-api:
-  #   image: go-api:latest
-  #   container_name: docker-compose-go-start-bot
-  #   depends_on:
-  #     - mariadb
-  #     - redis
-  #     - elasticsearch
-  #   ports:
-  #     - 8080:8080
-  #   # expose:
-  #   #   - "8080"
+  go-api:
+    image: go-api-project-final:1.0
+    container_name: docker-compose-go-api-project-final
+    depends_on:
+      - mariadb
+      - redis
+      - elasticsearch
+    volumes:
+      - ./mylog:/home
+    ports:
+      - 8080:8080
+    # expose:
+    #   - "8080"
 networks: 
   default: 
     external: 

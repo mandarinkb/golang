@@ -38,7 +38,7 @@ func (h userHandler) Authenticate(c *gin.Context) {
 	if err != nil {
 		logger.Error(err.Error(), utils.Url(c.Request.URL.Path),
 			utils.User("-"), utils.Type(utils.TypeWeb))
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 	token, err := h.userSrv.Authenticate(reqBody.Username, reqBody.Password)
@@ -134,7 +134,7 @@ func (h userHandler) ReadUserByID(c *gin.Context) {
 	if err != nil {
 		logger.Error(err.Error(), utils.Url(c.Request.URL.Path),
 			utils.User(middleware.Username), utils.Type(utils.TypeWeb))
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 	user, err := h.userSrv.ReadById(id)
@@ -167,7 +167,7 @@ func (h userHandler) CreateUsers(c *gin.Context) {
 	if err != nil {
 		logger.Error(err.Error(), utils.Url(c.Request.URL.Path),
 			utils.User(middleware.Username), utils.Type(utils.TypeWeb))
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 	user, err := h.userSrv.Create(reqBody)
@@ -197,7 +197,7 @@ func (h userHandler) UpdateUsers(c *gin.Context) {
 	if err != nil {
 		logger.Error(err.Error(), utils.Url(c.Request.URL.Path),
 			utils.User(middleware.Username), utils.Type(utils.TypeWeb))
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 	user, err := h.userSrv.Update(reqBody)
@@ -229,7 +229,7 @@ func (h userHandler) DeleteUsers(c *gin.Context) {
 	if err != nil {
 		logger.Error(err.Error(), utils.Url(c.Request.URL.Path),
 			utils.User(middleware.Username), utils.Type(utils.TypeWeb))
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 

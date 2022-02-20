@@ -56,7 +56,7 @@ func (w webHandler) ReadById(c *gin.Context) {
 	if err != nil {
 		logger.Error(err.Error(), utils.Url(c.Request.URL.Path),
 			utils.User(middleware.Username), utils.Type(utils.TypeWeb))
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 	web, err := w.webServ.ReadById(id)
@@ -87,7 +87,7 @@ func (w webHandler) Create(c *gin.Context) {
 	if err != nil {
 		logger.Error(err.Error(), utils.Url(c.Request.URL.Path),
 			utils.User(middleware.Username), utils.Type(utils.TypeWeb))
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 	err = w.webServ.Create(reqBody)
@@ -118,7 +118,7 @@ func (w webHandler) Update(c *gin.Context) {
 	if err != nil {
 		logger.Error(err.Error(), utils.Url(c.Request.URL.Path),
 			utils.User(middleware.Username), utils.Type(utils.TypeWeb))
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 	err = w.webServ.Update(reqBody)
@@ -149,7 +149,7 @@ func (w webHandler) UpdateStatus(c *gin.Context) {
 	if err != nil {
 		logger.Error(err.Error(), utils.Url(c.Request.URL.Path),
 			utils.User(middleware.Username), utils.Type(utils.TypeWeb))
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 	err = w.webServ.UpdateStatus(reqBody)
@@ -180,7 +180,7 @@ func (w webHandler) Delete(c *gin.Context) {
 	if err != nil {
 		logger.Error(err.Error(), utils.Url(c.Request.URL.Path),
 			utils.User(middleware.Username), utils.Type(utils.TypeWeb))
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 	webName, err := w.webServ.Delete(id)
