@@ -6,15 +6,17 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/mandarinkb/go-start-bot-project-final/database"
+	"github.com/mandarinkb/go-start-bot-project-final/middleware"
 	"github.com/mandarinkb/go-start-bot-project-final/repository"
 	"github.com/mandarinkb/go-start-bot-project-final/service"
 	"github.com/robfig/cron/v3"
 )
 
 var (
-	Cron    *cron.Cron
-	CronId  cron.EntryID
-	cronStr string
+	Cron     *cron.Cron
+	CronId   cron.EntryID
+	cronExp  string
+	cronName string
 )
 
 // ตัดตัวอักษรตัวแรกออก
@@ -63,17 +65,18 @@ func getCronExpression() {
 	for _, row := range scheduleServ {
 		if row.ProjectName == "project-final-start-bot" {
 			cr = row.CronExpression
+			cronName = row.ScheduleName
 		}
 	}
-	cronStr = trimTwoLetterPrefix(cr)
+	cronExp = trimTwoLetterPrefix(cr)
 }
 
 // ตั้งเวาการทำงาน
 func cronJob() {
 	getCronExpression()
-	fmt.Println(cronStr)
+	fmt.Println(cronExp, " : ", cronName)
 	Cron = cron.New()
-	CronId, _ = Cron.AddFunc(cronStr, func() {
+	CronId, _ = Cron.AddFunc(cronExp, func() {
 		startBot()
 	})
 	Cron.Start()
@@ -90,6 +93,7 @@ func main() {
 	cronJob()
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
+	router.Use(middleware.CORS())
 	router.POST("/restart", restartHandler())
 	router.Run(":8081")
 }
