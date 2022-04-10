@@ -45,7 +45,7 @@ func main() {
 	config.Consumer.Return.Errors = true
 
 	// Start with a client
-	client, err := sarama.NewClient([]string{"localhost:9092"}, config)
+	client, err := sarama.NewClient([]string{"localhost:9093"}, config)
 	if err != nil {
 		panic(err)
 	}

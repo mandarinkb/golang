@@ -14,7 +14,7 @@ type User struct {
 
 func main() {
 	//addresses of available kafka client
-	client := []string{"localhost:9092"}
+	client := []string{"localhost:9093"}
 	//setup relevant config info
 	config := sarama.NewConfig()
 	config.Producer.Partitioner = sarama.NewRandomPartitioner

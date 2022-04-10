@@ -4,21 +4,24 @@ services:
     image: zookeeper
     container_name: zookeeper
     # volumes:
-    #   - ./zookeeper-data:/data
-  
+    #   - ./zookeeper-data:/data 
   kafka:
     image: bitnami/kafka
     container_name: kafka
     ports:
-      - 9092:9092
+      - 9093:9093
     # volumes:
     #   - ./kafka-data:/bitnami/kafka/data
     environment:
       - ALLOW_PLAINTEXT_LISTENER=yes
-      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://127.0.0.1:9092
       - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      - KAFKA_CFG_LISTENERS=CLIENT://:9092,EXTERNAL://:9093
+      - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9092,EXTERNAL://localhost:9093
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=CLIENT
     depends_on:
       - zookeeper
-
-         
+networks: 
+  default: 
+    external: 
+      name: project-final  

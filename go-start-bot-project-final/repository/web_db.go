@@ -16,7 +16,7 @@ func (w webRepo) Read() (web []Web, err error) {
 		return nil, err
 	}
 
-	query := "SELECT * FROM WEB ORDER BY WEB_ID DESC"
+	query := "SELECT * FROM WEB WHERE WEB_STATUS='1'"
 	rows, err := w.db.Query(query)
 	if err != nil {
 		return nil, err

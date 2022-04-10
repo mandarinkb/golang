@@ -2,10 +2,12 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"time"
 
 	"github.com/mandarinkb/go-fetch-url-bot-project-final/database"
+	"github.com/mandarinkb/go-fetch-url-bot-project-final/service"
 	"github.com/mandarinkb/go-fetch-url-bot-project-final/utils"
 	"github.com/robfig/cron/v3"
 )
@@ -34,56 +36,55 @@ func run() {
 	redis := database.RedisConn()
 	defer redis.Close()
 
-	// webData := service.Web{}
+	webData := service.Web{}
 	// จัดการหมวดหมู่สินค้าใหม่
 	checkStartUrl := true
 	for checkStartUrl {
-		startUrl, err := redis.BLPop(context.Background(), 0*time.Second, "startUrl").Result()
-		// startUrl, err := redis.RPop(context.Background(), "startUrl").Result()
+		startUrl, err := redis.RPop(context.Background(), "startUrl").Result()
 		if err != nil {
 			checkStartUrl = false
 		}
 		fmt.Println(startUrl)
-		// if startUrl != "" {
-		// 	err = json.Unmarshal([]byte(startUrl), &webData)
-		// 	if err != nil {
-		// 		logger.Error(err.Error(), utils.Url("-"),
-		// 			utils.User("-"), utils.Type(utils.TypeBot))
-		// 		checkStartUrl = false
-		// 	}
-		// 	if webData.WebStatus == "1" {
-		// 		switch webData.WebName {
-		// 		case "tescolotus":
-		// 			service.TescolotusMainPage(webData)
-		// 		case "makroclick":
-		// 			service.MakroMainPage(webData)
-		// 		case "bigc":
-		// 			service.BigcMainPage(webData)
-		// 		}
-		// 	}
-		// }
+		if startUrl != "" {
+			err = json.Unmarshal([]byte(startUrl), &webData)
+			if err != nil {
+				logger.Error(err.Error(), utils.Url("-"),
+					utils.User("-"), utils.Type(utils.TypeBot))
+				checkStartUrl = false
+			}
+			if webData.WebStatus == "1" {
+				switch webData.WebName {
+				case "tescolotus":
+					service.TescolotusMainPage(webData)
+				case "makroclick":
+					service.MakroMainPage(webData)
+				case "bigc":
+					service.BigcMainPage(webData)
+				}
+			}
+		}
 	}
 	// หา url ของสินค้าในแต่ละหมวดหมู่ โดยจะหาทุกๆหน้า
-	// checkFetchUrl := true
-	// for checkFetchUrl {
-	// 	fetchUrl, err := redis.RPop(context.Background(), "fetchUrl").Result()
-	// 	if err != nil {
-	// 		checkFetchUrl = false
-	// 	}
-	// 	if fetchUrl != "" {
-	// 		json.Unmarshal([]byte(fetchUrl), &webData)
-	// 		if webData.WebStatus == "1" {
-	// 			switch webData.WebName {
-	// 			case "tescolotus":
-	// 				service.TescolotusFindUrlInPage(webData)
-	// 			case "makroclick":
-	// 				service.MakroFindUrlInPage(webData)
-	// 			case "bigc":
-	// 				service.BigcFindUrlInPage(webData)
-	// 			}
-	// 		}
-	// 	}
-	// }
+	checkFetchUrl := true
+	for checkFetchUrl {
+		fetchUrl, err := redis.RPop(context.Background(), "fetchUrl").Result()
+		if err != nil {
+			checkFetchUrl = false
+		}
+		if fetchUrl != "" {
+			json.Unmarshal([]byte(fetchUrl), &webData)
+			if webData.WebStatus == "1" {
+				switch webData.WebName {
+				case "tescolotus":
+					service.TescolotusFindUrlInPage(webData)
+				case "makroclick":
+					service.MakroFindUrlInPage(webData)
+				case "bigc":
+					service.BigcFindUrlInPage(webData)
+				}
+			}
+		}
+	}
 
 	logger.Info("[fetch url bot] stop", utils.Url("-"),
 		utils.User("-"), utils.Type(utils.TypeBot))

@@ -1,7 +1,7 @@
 version: '3.5'
 services:  
   go-start-bot:
-    image: go-start-bot:1.5
+    image: go-start-bot:1.0
     volumes:
       - ./mylog:/home
     ports:
