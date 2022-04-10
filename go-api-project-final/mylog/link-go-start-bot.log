@@ -1,9 +1,70 @@
-{"level":"info","timestamp":"2022-02-13T20:40:00.088+0700","caller":"service/web_service.go:31","msg":"[start bot] start","url":"-","user":"-","typeLog":"bot"}
-{"level":"info","timestamp":"2022-02-13T20:40:00.098+0700","caller":"service/web_service.go:83","msg":"clear data in redis","url":"-","user":"-","typeLog":"bot"}
-{"level":"info","timestamp":"2022-02-13T20:40:00.104+0700","caller":"service/web_service.go:97","msg":"swap database in elasticsearch","url":"-","user":"-","typeLog":"bot"}
-{"level":"info","timestamp":"2022-02-13T20:40:00.257+0700","caller":"service/web_service.go:111","msg":"clear data in web-scrapping-db-2","url":"-","user":"-","typeLog":"bot"}
-{"level":"info","timestamp":"2022-02-18T11:10:00.060+0700","caller":"service/web_service.go:31","msg":"[start bot] start","url":"-","user":"-","typeLog":"bot"}
-{"level":"info","timestamp":"2022-02-18T11:10:00.071+0700","caller":"service/web_service.go:83","msg":"clear data in redis","url":"-","user":"-","typeLog":"bot"}
-{"level":"info","timestamp":"2022-02-18T11:10:00.077+0700","caller":"service/web_service.go:97","msg":"swap database in elasticsearch","url":"-","user":"-","typeLog":"bot"}
-{"level":"info","timestamp":"2022-02-18T11:10:00.207+0700","caller":"service/web_service.go:111","msg":"clear data in web-scrapping-db-1","url":"-","user":"-","typeLog":"bot"}
-{"level":"info","timestamp":"2022-02-18T11:10:00.214+0700","caller":"service/web_service.go:63","msg":"[start bot] stop","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-02-20T15:38:00.001+0700","caller":"service/web_service.go:31","msg":"[start bot] start","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-02-20T15:38:00.012+0700","caller":"service/web_service.go:83","msg":"clear data in redis","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-02-20T15:38:00.018+0700","caller":"service/web_service.go:97","msg":"swap database in elasticsearch","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-02-20T15:38:00.115+0700","caller":"service/web_service.go:111","msg":"clear data in web-scrapping-db-2","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-02-20T15:38:00.121+0700","caller":"service/web_service.go:63","msg":"[start bot] stop","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-02-20T15:39:00.041+0700","caller":"service/web_service.go:31","msg":"[start bot] start","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-02-20T15:39:00.047+0700","caller":"service/web_service.go:83","msg":"clear data in redis","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-02-20T15:39:00.051+0700","caller":"service/web_service.go:97","msg":"swap database in elasticsearch","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-02-20T15:39:00.057+0700","caller":"service/web_service.go:111","msg":"clear data in web-scrapping-db-1","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-02-20T15:39:00.061+0700","caller":"service/web_service.go:63","msg":"[start bot] stop","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-02-20T15:55:00.008+0700","caller":"service/web_service.go:31","msg":"[start bot] start","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-02-20T15:55:00.014+0700","caller":"service/web_service.go:83","msg":"clear data in redis","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-02-20T15:55:00.017+0700","caller":"service/web_service.go:97","msg":"swap database in elasticsearch","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-02-20T15:55:00.022+0700","caller":"service/web_service.go:111","msg":"clear data in web-scrapping-db-2","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-02-20T15:55:00.025+0700","caller":"service/web_service.go:63","msg":"[start bot] stop","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-02-20T15:56:00.055+0700","caller":"service/web_service.go:31","msg":"[start bot] start","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-02-20T15:56:00.060+0700","caller":"service/web_service.go:83","msg":"clear data in redis","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-02-20T15:56:00.064+0700","caller":"service/web_service.go:97","msg":"swap database in elasticsearch","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-02-20T15:56:00.069+0700","caller":"service/web_service.go:111","msg":"clear data in web-scrapping-db-1","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-02-20T15:56:00.074+0700","caller":"service/web_service.go:63","msg":"[start bot] stop","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-02-20T15:57:00.056+0700","caller":"service/web_service.go:31","msg":"[start bot] start","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-02-20T15:57:00.058+0700","caller":"service/web_service.go:83","msg":"clear data in redis","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-02-20T15:57:00.062+0700","caller":"service/web_service.go:97","msg":"swap database in elasticsearch","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-02-20T15:57:00.066+0700","caller":"service/web_service.go:111","msg":"clear data in web-scrapping-db-2","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-02-20T15:57:00.070+0700","caller":"service/web_service.go:63","msg":"[start bot] stop","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-02-20T15:58:00.006+0700","caller":"service/web_service.go:31","msg":"[start bot] start","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-02-20T15:58:00.021+0700","caller":"service/web_service.go:83","msg":"clear data in redis","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-02-20T15:58:00.032+0700","caller":"service/web_service.go:97","msg":"swap database in elasticsearch","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-02-20T15:58:00.041+0700","caller":"service/web_service.go:111","msg":"clear data in web-scrapping-db-1","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-02-20T15:58:00.051+0700","caller":"service/web_service.go:63","msg":"[start bot] stop","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-02-20T16:05:00.079+0700","caller":"service/web_service.go:31","msg":"[start bot] start","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-02-20T16:05:00.085+0700","caller":"service/web_service.go:83","msg":"clear data in redis","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-02-20T16:05:00.088+0700","caller":"service/web_service.go:97","msg":"swap database in elasticsearch","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-02-20T16:05:00.093+0700","caller":"service/web_service.go:111","msg":"clear data in web-scrapping-db-2","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-02-20T16:05:00.098+0700","caller":"service/web_service.go:63","msg":"[start bot] stop","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-02-28T17:05:00.011+0700","caller":"service/web_service.go:31","msg":"[start bot] start","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-02-28T17:05:00.014+0700","caller":"service/web_service.go:83","msg":"clear data in redis","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-02-28T17:05:00.017+0700","caller":"service/web_service.go:97","msg":"swap database in elasticsearch","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-02-28T17:05:00.140+0700","caller":"service/web_service.go:111","msg":"clear data in web-scrapping-db-1","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-02-28T17:05:00.146+0700","caller":"service/web_service.go:63","msg":"[start bot] stop","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-03-12T08:00:00.108+0700","caller":"service/web_service.go:31","msg":"[start bot] start","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-03-12T08:00:00.114+0700","caller":"service/web_service.go:83","msg":"clear data in redis","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-03-12T08:00:00.120+0700","caller":"service/web_service.go:97","msg":"swap database in elasticsearch","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-03-12T08:00:00.379+0700","caller":"service/web_service.go:111","msg":"clear data in web-scrapping-db-2","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-03-12T08:00:00.389+0700","caller":"service/web_service.go:63","msg":"[start bot] stop","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-03-13T08:00:00.049+0700","caller":"service/web_service.go:31","msg":"[start bot] start","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-03-13T08:00:00.053+0700","caller":"service/web_service.go:83","msg":"clear data in redis","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-03-13T08:00:00.059+0700","caller":"service/web_service.go:97","msg":"swap database in elasticsearch","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-03-13T08:00:00.292+0700","caller":"service/web_service.go:111","msg":"clear data in web-scrapping-db-1","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-03-13T08:00:00.298+0700","caller":"service/web_service.go:63","msg":"[start bot] stop","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-03-18T08:00:00.001+0700","caller":"service/web_service.go:31","msg":"[start bot] start","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-03-18T08:00:00.010+0700","caller":"service/web_service.go:83","msg":"clear data in redis","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-03-18T08:00:00.014+0700","caller":"service/web_service.go:97","msg":"swap database in elasticsearch","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-03-18T08:00:00.258+0700","caller":"service/web_service.go:111","msg":"clear data in web-scrapping-db-2","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-03-18T08:00:00.266+0700","caller":"service/web_service.go:63","msg":"[start bot] stop","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-03-28T21:10:00.000+0700","caller":"service/web_service.go:31","msg":"[start bot] start","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-03-28T21:10:00.011+0700","caller":"service/web_service.go:83","msg":"clear data in redis","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-03-28T21:10:00.017+0700","caller":"service/web_service.go:97","msg":"swap database in elasticsearch","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-03-28T21:10:00.022+0700","caller":"service/web_service.go:111","msg":"clear data in web-scrapping-db-2","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-03-28T21:10:00.026+0700","caller":"service/web_service.go:63","msg":"[start bot] stop","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-03-28T21:12:00.029+0700","caller":"service/web_service.go:31","msg":"[start bot] start","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-03-28T21:12:00.034+0700","caller":"service/web_service.go:83","msg":"clear data in redis","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-03-28T21:12:00.040+0700","caller":"service/web_service.go:97","msg":"swap database in elasticsearch","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-03-28T21:12:00.047+0700","caller":"service/web_service.go:111","msg":"clear data in web-scrapping-db-1","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-03-28T21:12:00.052+0700","caller":"service/web_service.go:63","msg":"[start bot] stop","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-03-28T21:15:00.089+0700","caller":"service/web_service.go:31","msg":"[start bot] start","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-03-28T21:15:00.094+0700","caller":"service/web_service.go:83","msg":"clear data in redis","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-03-28T21:15:00.100+0700","caller":"service/web_service.go:97","msg":"swap database in elasticsearch","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-03-28T21:15:00.106+0700","caller":"service/web_service.go:111","msg":"clear data in web-scrapping-db-2","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-03-28T21:15:00.110+0700","caller":"service/web_service.go:63","msg":"[start bot] stop","url":"-","user":"-","typeLog":"bot"}

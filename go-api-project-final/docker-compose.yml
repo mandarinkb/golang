@@ -38,6 +38,7 @@ services:
   go-api:
     image: go-api-project-final:1.0
     container_name: docker-compose-go-api-project-final
+    restart: always
     depends_on:
       - mariadb
       - redis
@@ -46,6 +47,14 @@ services:
       - ./mylog:/home
     ports:
       - 8080:8080
+  ui:
+    image: project-final-ui:1.0
+    container_name: docker-compose-project-final-ui
+    restart: always
+    depends_on:
+      - go-api
+    ports:
+      - 4200:80
     # expose:
     #   - "8080"
 networks: 

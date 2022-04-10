@@ -57,6 +57,7 @@ func (w webService) Read() error {
 			return err
 		}
 		redis.RPush(context.Background(), "startUrl", string(webStr))
+		fmt.Println(string(webStr))
 	}
 	fmt.Println(time.Now(), " : start bot stop")
 

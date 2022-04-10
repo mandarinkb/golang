@@ -10,9 +10,9 @@ var TypeBot string = "bot"
 func LogConf() (*zap.Logger, error) {
 	config := zap.NewProductionConfig()
 	// [for production] กรณี build ขึ้น docker จะเก็บไว้ที่ /home ใน container
-	config.OutputPaths = []string{"../home/go-start-bot.log"}
+	// config.OutputPaths = []string{"../home/go-start-bot.log"}
 	// [for vscode run]
-	// config.OutputPaths = []string{"./mylog/go-start-bot.log"}
+	config.OutputPaths = []string{"./mylog/go-start-bot.log"}
 	config.EncoderConfig.TimeKey = "timestamp"
 	config.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
 	logger, err := config.Build()
