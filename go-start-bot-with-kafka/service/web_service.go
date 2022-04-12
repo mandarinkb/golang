@@ -67,11 +67,11 @@ func (w webService) Read() error {
 			Value: sarama.StringEncoder(string(webStr)),
 		}
 
-		pid, offset, err := producer.SendMessage(message)
+		_, offset, err := producer.SendMessage(message)
 		if err != nil {
 			return err
 		}
-		fmt.Println("partition : ", pid)
+		// fmt.Println("partition : ", pid)
 		fmt.Println("offset : ", offset)
 		fmt.Println(string(webStr))
 		fmt.Println()
@@ -91,14 +91,14 @@ func clearOldData() error {
 	// close log
 	defer logger.Sync()
 
-	clusterAdmin := database.KafkaAdminConn()
-	defer clusterAdmin.Close()
-	clusterAdmin.DeleteTopic("start-url")
-	clusterAdmin.DeleteTopic("fetch-url")
-	clusterAdmin.DeleteTopic("detail-url")
+	// clusterAdmin := database.KafkaAdminConn()
+	// defer clusterAdmin.Close()
+	// clusterAdmin.DeleteTopic("start-url")
+	// clusterAdmin.DeleteTopic("fetch-url")
+	// clusterAdmin.DeleteTopic("detail-url")
 
-	logger.Info("clear data in redis", utils.Url("-"),
-		utils.User("-"), utils.Type(utils.TypeBot))
+	// logger.Info("clear data in redis", utils.Url("-"),
+	// 	utils.User("-"), utils.Type(utils.TypeBot))
 
 	db, err := database.Conn()
 	if err != nil {
