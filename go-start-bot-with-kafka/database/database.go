@@ -27,12 +27,8 @@ func init() {
 }
 
 func KafkaConn() sarama.SyncProducer {
-	//addresses of available kafka client
 	client := []string{kafkaHost}
-	//setup relevant config info
 	config := sarama.NewConfig()
-	config.Producer.Partitioner = sarama.NewRandomPartitioner
-	config.Producer.RequiredAcks = sarama.WaitForAll
 	config.Producer.Return.Successes = true
 	producer, err := sarama.NewSyncProducer(client, config)
 	if err != nil {
@@ -41,11 +37,12 @@ func KafkaConn() sarama.SyncProducer {
 	return producer
 }
 func KafkaAdminConn() sarama.ClusterAdmin {
+	client := []string{kafkaHost}
 	config := sarama.NewConfig()
 	config.Producer.Partitioner = sarama.NewRandomPartitioner
 	config.Producer.RequiredAcks = sarama.WaitForAll
 	config.Producer.Return.Successes = true
-	clusterAdmin, err := sarama.NewClusterAdmin([]string{kafkaHost}, config)
+	clusterAdmin, err := sarama.NewClusterAdmin(client, config)
 	if err != nil {
 		fmt.Println("KafkaAdminConn close, err:", err)
 	}

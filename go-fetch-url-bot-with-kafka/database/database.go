@@ -27,12 +27,8 @@ func init() {
 }
 
 func KafkaProducerConn() sarama.SyncProducer {
-	//addresses of available kafka client
 	client := []string{kafkaHost}
-	//setup relevant config info
 	config := sarama.NewConfig()
-	config.Producer.Partitioner = sarama.NewRandomPartitioner
-	config.Producer.RequiredAcks = sarama.WaitForAll
 	config.Producer.Return.Successes = true
 	producer, err := sarama.NewSyncProducer(client, config)
 	if err != nil {
@@ -40,27 +36,16 @@ func KafkaProducerConn() sarama.SyncProducer {
 	}
 	return producer
 }
-func KafkaProducerAdminConn() sarama.ClusterAdmin {
-	config := sarama.NewConfig()
-	config.Producer.Partitioner = sarama.NewRandomPartitioner
-	config.Producer.RequiredAcks = sarama.WaitForAll
-	config.Producer.Return.Successes = true
-	clusterAdmin, err := sarama.NewClusterAdmin([]string{kafkaHost}, config)
-	if err != nil {
-		fmt.Println("KafkaAdminConn close, err:", err)
-	}
-	return clusterAdmin
-}
 
 func KafkaConsumerConn() sarama.Client {
+	client := []string{kafkaHost}
 	config := sarama.NewConfig()
-	config.Version = sarama.V3_0_0_0
 	config.Consumer.Return.Errors = true
-	client, err := sarama.NewClient([]string{"localhost:9093"}, config)
+	consumer, err := sarama.NewClient(client, config)
 	if err != nil {
 		panic(err)
 	}
-	return client
+	return consumer
 }
 func Conn() (*sql.DB, error) {
 	return sql.Open(driverName, datasourceName)

@@ -1,3 +1,5 @@
 {"level":"info","timestamp":"2022-04-12T22:05:34.410+0700","caller":"go-web-scraping-bot-with-kafka/main.go:73","msg":"[web scrapping bot] start","url":"-","user":"-","typeLog":"bot"}
 {"level":"info","timestamp":"2022-04-12T22:10:51.907+0700","caller":"go-web-scraping-bot-with-kafka/main.go:73","msg":"[web scrapping bot] start","url":"-","user":"-","typeLog":"bot"}
 {"level":"info","timestamp":"2022-04-12T22:13:20.867+0700","caller":"go-web-scraping-bot-with-kafka/main.go:73","msg":"[web scrapping bot] start","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-04-24T15:15:04.092+0700","caller":"go-web-scraping-bot-with-kafka/main.go:23","msg":"[web scrapping bot] start","url":"-","user":"-","typeLog":"bot"}
+{"level":"info","timestamp":"2022-04-24T15:24:49.542+0700","caller":"go-web-scraping-bot-with-kafka/main.go:23","msg":"[web scrapping bot] start","url":"-","user":"-","typeLog":"bot"}
