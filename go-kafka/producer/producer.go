@@ -28,8 +28,8 @@ func main() {
 	defer producer.Close()
 
 	user := User{
-		Username: "man",
-		Email:    "man@gmail.com",
+		Username: "aaa",
+		Email:    "aaa@gmail.com",
 	}
 
 	json, _ := json.Marshal(user)
