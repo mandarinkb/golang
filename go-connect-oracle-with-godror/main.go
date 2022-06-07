@@ -24,7 +24,7 @@ func main() {
 	// db, err := sqlx.Open("godror", `user="system" password="oracle" connectString="127.0.0.1:1521/xe"`)
 
 	//===== for build-in conn =====//
-	db, err := sql.Open("godror", `user="system" password="oracle" connectString="127.0.0.1:1521/xe"`)
+	db, err := sql.Open("godror", `user="system" password="oracle" connectString="oracle-11g-db:1521/xe"`)
 
 	if err != nil {
 		fmt.Println(err)
