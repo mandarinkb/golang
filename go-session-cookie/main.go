@@ -28,5 +28,9 @@ func main() {
 	router.POST("/logout", userHandler.LogOut)
 	router.POST("/refresh", userHandler.Refresh)
 	router.GET("/users", userHandler.Read)
+	router.GET("/users/:id", userHandler.ReadById)
+	router.POST("/users", userHandler.Create)
+	router.PUT("/users", userHandler.Update)
+	router.DELETE("/users/:id", userHandler.Delete)
 	router.Run(":8989")
 }

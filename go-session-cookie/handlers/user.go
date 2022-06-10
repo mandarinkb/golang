@@ -1,12 +1,10 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
-	"time"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"github.com/mandarinkb/go-session-cookie/middleware"
 	"github.com/mandarinkb/go-session-cookie/service"
 )
@@ -32,37 +30,16 @@ func (h userHandler) Login(c *gin.Context) {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
-	expiresAt := time.Now().Add(1 * time.Minute)
-	sessionToken := uuid.NewString()
-	middleware.Sessions[sessionToken] = middleware.Session{
-		Username: reqBody.Username,
-		Expire:   expiresAt,
-	}
-	fmt.Println(middleware.Sessions)
-	http.SetCookie(c.Writer, &http.Cookie{
-		Name:     "session_token",
-		Value:    sessionToken,
-		Expires:  expiresAt,
-		HttpOnly: true})
+	middleware.CreateSessionCookie(c, reqBody.Username)
+	c.IndentedJSON(http.StatusOK, gin.H{"message": "authenticate success"})
 }
 
 func (h userHandler) LogOut(c *gin.Context) {
-	fmt.Println(middleware.Sessions)
 	c.IndentedJSON(http.StatusOK, gin.H{"message": "log out success"})
 }
 func (h userHandler) Refresh(c *gin.Context) {
-	fmt.Println(middleware.UserSession.Username)
-	expiresAt := time.Now().Add(1 * time.Minute)
-	sessionToken := uuid.NewString()
-	middleware.Sessions[sessionToken] = middleware.Session{
-		Username: middleware.UserSession.Username,
-		Expire:   expiresAt,
-	}
-	http.SetCookie(c.Writer, &http.Cookie{
-		Name:     "session_token",
-		Value:    sessionToken,
-		Expires:  expiresAt,
-		HttpOnly: true})
+	middleware.CreateSessionCookie(c, middleware.RSession.Username)
+	c.IndentedJSON(http.StatusOK, gin.H{"message": "create new cookie success"})
 }
 
 func (h userHandler) Read(c *gin.Context) {
@@ -72,4 +49,65 @@ func (h userHandler) Read(c *gin.Context) {
 		return
 	}
 	c.IndentedJSON(http.StatusOK, users)
+}
+
+func (h userHandler) ReadById(c *gin.Context) {
+	idStr := c.Param("id")
+	// แปลงเป็น int
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
+	}
+	user, err := h.userServ.ReadById(id)
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
+	}
+	c.IndentedJSON(http.StatusOK, user)
+}
+func (h userHandler) Create(c *gin.Context) {
+	var reqBody service.UserRequest
+	// แปลงค่าจาก body payload เป็น struct
+	err := c.BindJSON(&reqBody)
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
+	}
+	user, err := h.userServ.Create(reqBody)
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
+	}
+	c.IndentedJSON(http.StatusOK, user)
+}
+func (h userHandler) Update(c *gin.Context) {
+	var reqBody service.UserRequest
+	// แปลงค่าจาก body payload เป็น struct
+	err := c.BindJSON(&reqBody)
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
+	}
+	user, err := h.userServ.Update(reqBody)
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
+	}
+	c.IndentedJSON(http.StatusOK, user)
+}
+func (h userHandler) Delete(c *gin.Context) {
+	idStr := c.Param("id")
+	// แปลงเป็น int
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
+	}
+	user, err := h.userServ.Delete(id)
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
+	}
+	c.IndentedJSON(http.StatusOK, user)
 }
