@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"errors"
+
 	"gorm.io/gorm"
 )
 
@@ -57,6 +59,10 @@ func (r userORM) Delete(id int) error {
 	tx := r.db.Delete(&User{}, id)
 	if tx.Error != nil {
 		return tx.Error
+	}
+	// ใล่ตรงนี้เพื่อแก้ปัญหาเวลาหา id ไม่พบ gorm จะไม่ return error
+	if tx.RowsAffected <= 0 {
+		return errors.New("record not found")
 	}
 	return nil
 }
