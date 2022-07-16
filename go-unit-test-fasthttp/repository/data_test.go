@@ -1,0 +1,50 @@
+package repository_test
+
+import (
+	"encoding/json"
+	"fmt"
+	"os"
+	"path"
+	"runtime"
+	"testing"
+
+	"github.com/mandarinkb/test-git/helper"
+	"github.com/mandarinkb/test-git/repository"
+)
+
+var mockAll = `[{"RequestCardTopupCompensateLogID":4,"CardNumber":"1002110000000010","CreditCode":"POINT","CreditAmount":"1000.0000","Comment":"","RequestStatus":"Approved","DateCreate":"2022-05-31 14:55:42","DateModify":null,"DateReview":"2022-05-31 14:55:51","CommentReview":null,"RequestNumber":"2022053114555172603000000COMP","AdminCreateName":"Bluport Superadmin","AdminModifyName":null,"AdminReviewName":"Bluport Superadmin"},
+{"RequestCardTopupCompensateLogID":3,"CardNumber":"1002620000000002","CreditCode":"POINT","CreditAmount":"100.0000","Comment":"","RequestStatus":"Canceled","DateCreate":"2022-05-31 11:07:28","DateModify":"2022-05-31 11:07:35","DateReview":null,"CommentReview":null,"RequestNumber":null,"AdminCreateName":"Bluport Superadmin","AdminModifyName":"Bluport Superadmin","AdminReviewName":null},
+{"RequestCardTopupCompensateLogID":2,"CardNumber":"1002620000000002","CreditCode":"POINT","CreditAmount":"200.0000","Comment":"","RequestStatus":"Rejected","DateCreate":"2022-05-31 11:06:43","DateModify":null,"DateReview":"2022-05-31 11:07:03","CommentReview":"test","RequestNumber":null,"AdminCreateName":"Bluport Superadmin","AdminModifyName":null,"AdminReviewName":"Bluport Superadmin"},
+{"RequestCardTopupCompensateLogID":1,"CardNumber":"1002620000000002","CreditCode":"POINT","CreditAmount":"1000.0000","Comment":"","RequestStatus":"Approved","DateCreate":"2022-05-30 15:16:13","DateModify":null,"DateReview":"2022-05-31 11:05:17","CommentReview":null,"RequestNumber":"2022053111051750821000000COMP","AdminCreateName":"Bluport Superadmin","AdminModifyName":null,"AdminReviewName":"Bluport Superadmin"}]`
+
+var mockOne = `{"RequestCardTopupCompensateLogID":1,"CardNumber":"1002620000000002","CreditCode":"POINT","CreditAmount":"1000.0000","Comment":"","RequestStatus":"Approved","DateCreate":"2022-05-30 15:16:13","DateModify":null,"DateReview":"2022-05-31 11:05:17","CommentReview":null,"RequestNumber":"2022053111051750821000000COMP","AdminCreateName":"Bluport Superadmin","AdminModifyName":null,"AdminReviewName":"Bluport Superadmin"}`
+
+// [fix bug test] no such file or directory
+func init() {
+	_, filename, _, _ := runtime.Caller(0)
+	//The ".." may change depending on you folder structure
+	dir := path.Join(path.Dir(filename), "..")
+	err := os.Chdir(dir)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("Current test filename: %s", dir)
+
+}
+func TestGetAll(t *testing.T) {
+	exp := []repository.Data{}
+	json.Unmarshal([]byte(mockAll), &exp)
+
+	act, _ := repository.NewMock().GetAll()
+
+	helper.Equals(t, exp, act)
+}
+
+func TestGetById(t *testing.T) {
+	exp := repository.Data{}
+	json.Unmarshal([]byte(mockOne), &exp)
+
+	act, _ := repository.NewMock().GetById(1)
+
+	helper.Equals(t, exp, *act)
+}
