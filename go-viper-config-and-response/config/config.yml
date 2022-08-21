@@ -1,0 +1,4 @@
+mariadb:
+  maria_password: mandarinkb
+  driver_name: mysql
+  data_source_name: root:mandarinkb@tcp(mariadb)/WEB_SCRAPPING?charset=utf8
