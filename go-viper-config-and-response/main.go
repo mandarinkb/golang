@@ -5,14 +5,33 @@ import (
 
 	"github.com/mandarinkb/go-viper-config-and-response/assets"
 	"github.com/mandarinkb/go-viper-config-and-response/config"
+	"github.com/mandarinkb/go-viper-config-and-response/repository"
 )
 
-func main() {
-	c := config.LoadConfig("config", "config")
-	a := assets.LoadAssets("assets", "error")
+type user struct {
+	Username string `json:"username"`
+	UserRole string `json:"userRole"`
+}
 
-	fmt.Println(c.MariaDb.DriverName)
-	fmt.Println(c.MariaDb.DataSourceName)
-	fmt.Println(a.Success)
+func main() {
+	config.LoadConfig("config", "config")
+	assets.LoadAssets("assets", "error")
+	user := user{
+		Username: "test user",
+		UserRole: "test user role",
+	}
+	es := repository.NewElasticSearchRepository()
+
+	msg, err := es.ESBuildJsonToByte(user)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	data, err := es.ESPost(config.C().Elastic.Index, config.C().Elastic.Type, msg)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(string(data))
 
 }

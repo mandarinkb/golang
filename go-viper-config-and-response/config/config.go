@@ -30,3 +30,8 @@ func LoadConfig(path string, fileNames ...string) *Root {
 	})
 	return c
 }
+
+// get config
+func C() *Root {
+	return c
+}
