@@ -1,0 +1,12 @@
+version: '3.5'
+services:  
+  go-viper:
+    image: go-viper:latest
+    container_name: docker-compose-go-viper
+
+networks: 
+  default: 
+    external: 
+      name: project-final  
+
+

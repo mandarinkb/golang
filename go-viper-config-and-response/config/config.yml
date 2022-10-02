@@ -15,6 +15,7 @@ elastic:
     tls_handshake_timeout: 5s
     respose_header_timeout: 5s
     expect_continue_timeout: 1s
-  server_with_port: http://127.0.0.1:5209
+  # server_with_port: http://127.0.0.1:5209
+  server_with_port: http://elasticsearch:9200
   index: test
   type: _doc 
