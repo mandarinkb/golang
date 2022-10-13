@@ -1,11 +1,15 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"fmt"
 
 	"github.com/mandarinkb/go-viper-config-and-response/assets"
 	"github.com/mandarinkb/go-viper-config-and-response/config"
+	"github.com/mandarinkb/go-viper-config-and-response/database"
+	"github.com/mandarinkb/go-viper-config-and-response/logger"
+	"github.com/mandarinkb/go-viper-config-and-response/repository"
 	"github.com/mandarinkb/go-viper-config-and-response/utils"
 )
 
@@ -37,9 +41,10 @@ func MapStrucValidationError(err error) error {
 }
 
 func main() {
-	config.LoadConfig("config", "config")
+	cfg := config.LoadConfig("config", "config")
 	assets.LoadAssets("assets", "error")
-	// logger.InitialLogger()
+	mainLog := logger.InitialLogger()
+	database.NewClient(cfg.Redis)
 	// mainLogger := logger.L().Named("main")
 
 	// for {
@@ -47,10 +52,34 @@ func main() {
 	// 	time.Sleep(1 * time.Second)
 	// }
 
-	alphabet := Alphabet{
-		Thai:    "ก ขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรลวศษสหฬอฮ อะแอเออะอาเอียะเอออ ิเอียอําอ ีเอือะใออึเอือไออือัวะเอาอัวฤอูอะฤๅเอะโอฦเออาะฦๅแอะออ",
-		English: "A aBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz",
-	}
-	ExampleValidate(alphabet)
+	// alphabet := Alphabet{
+	// 	Thai:    "ก ขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรลวศษสหฬอฮ อะแอเออะอาเอียะเอออ ิเอียอําอ ีเอือะใออึเอือไออือัวะเอาอัวฤอูอะฤๅเอะโอฦเออาะฦๅแอะออ",
+	// 	English: "A aBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz",
+	// }
+	// ExampleValidate(alphabet)
 
+	rd := repository.NewRedisRepository()
+
+	alphabet := Alphabet{
+		Thai:    "กขคง",
+		English: "abcd",
+	}
+	err := rd.SaveRedis(context.Background(), cfg.RedisOption.MyOption.KeyFormat, alphabet, cfg.RedisOption.MyOption.TTL)
+	if err != nil {
+		mainLog.Errorf("save redis error key %v error: %v", cfg.RedisOption.MyOption.KeyFormat, err)
+	}
+	mainLog.Info("save redis success")
+
+	// rdData := Alphabet{}
+	// err := rd.GetRedis(context.Background(), cfg.RedisOption.MyOption.KeyFormat, &rdData)
+	// if err != nil {
+	// 	mainLog.Errorf("get redis error key %v error: %v", cfg.RedisOption.MyOption.KeyFormat, err)
+	// }
+	// js, _ := json.Marshal(rdData)
+	// fmt.Println(string(js))
+
+	// err := rd.RemoveRedis(context.Background(), cfg.RedisOption.MyOption.KeyFormat)
+	// if err != nil {
+	// 	mainLog.Errorf("remove redis error key %v error: %v", cfg.RedisOption.MyOption.KeyFormat, err)
+	// }
 }

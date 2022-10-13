@@ -19,3 +19,13 @@ elastic:
   server_with_port: http://elasticsearch:9200
   index: test
   type: _doc 
+
+redis:
+  addr: 127.0.0.1:6379
+  password: mandarinkb
+  db_index: 0
+
+redis_option:
+  my_option:
+    key_format: my_key
+    ttl: 5m

@@ -17,3 +17,22 @@
 {"severity":"INFO","time":"2022-10-08T19:51:06.162+0700","logger":"main","caller":"runtime/proc.go:250","func":"runtime.main","msg":"running success"}
 {"severity":"INFO","time":"2022-10-08T19:51:07.162+0700","logger":"main","caller":"runtime/proc.go:250","func":"runtime.main","msg":"running success"}
 {"severity":"INFO","time":"2022-10-08T19:51:08.163+0700","logger":"main","caller":"runtime/proc.go:250","func":"runtime.main","msg":"running success"}
+{"severity":"INFO","time":"2022-10-13T22:41:40.466+0700","caller":"database/redis.go:30","func":"github.com/mandarinkb/go-viper-config-and-response/database.NewClient","msg":"cannot connect to redis: dial tcp: address http://127.0.0.1:6379: too many colons in address"}
+{"severity":"ERROR","time":"2022-10-13T22:41:40.547+0700","caller":"go-viper-config-and-response/main.go:68","func":"main.main","msg":"sava redis error key my_key error: dial tcp: address http://127.0.0.1:6379: too many colons in address"}
+{"severity":"INFO","time":"2022-10-13T22:51:46.608+0700","caller":"runtime/proc.go:250","func":"runtime.main","msg":"save redis success"}
+{"severity":"INFO","time":"2022-10-13T23:01:31.843+0700","caller":"runtime/proc.go:250","func":"runtime.main","msg":"save redis success"}
+{"severity":"ERROR","time":"2022-10-13T23:11:44.356+0700","caller":"go-viper-config-and-response/main.go:78","func":"main.main","msg":"get redis error key my_key error: redis: nil"}
+{"severity":"INFO","time":"2022-10-13T23:18:35.376+0700","caller":"runtime/proc.go:250","func":"runtime.main","msg":"save redis success"}
+{"severity":"INFO","time":"2022-10-13T23:21:04.519+0700","caller":"runtime/proc.go:250","func":"runtime.main","msg":"save redis success"}
+{"severity":"INFO","time":"2022-10-13T23:22:00.877+0700","caller":"runtime/proc.go:250","func":"runtime.main","msg":"save redis success"}
+{"severity":"INFO","time":"2022-10-13T23:22:47.912+0700","caller":"runtime/proc.go:250","func":"runtime.main","msg":"save redis success"}
+{"severity":"ERROR","time":"2022-10-13T23:23:35.643+0700","caller":"go-viper-config-and-response/main.go:83","func":"main.main","msg":"remove redis error key aa error: redis: nil"}
+{"severity":"ERROR","time":"2022-10-13T23:39:48.206+0700","caller":"go-viper-config-and-response/main.go:83","func":"main.main","msg":"remove redis error key aa error: redis: nil"}
+{"severity":"ERROR","time":"2022-10-13T23:39:56.927+0700","caller":"go-viper-config-and-response/main.go:83","func":"main.main","msg":"remove redis error key aa error: redis: nil"}
+{"severity":"INFO","time":"2022-10-13T23:40:19.194+0700","caller":"runtime/proc.go:250","func":"runtime.main","msg":"save redis success"}
+{"severity":"ERROR","time":"2022-10-13T23:40:37.818+0700","caller":"go-viper-config-and-response/main.go:83","func":"main.main","msg":"remove redis error key aa error: redis: nil"}
+{"severity":"ERROR","time":"2022-10-13T23:40:50.446+0700","caller":"go-viper-config-and-response/main.go:83","func":"main.main","msg":"remove redis error key aa error: redis: nil"}
+{"severity":"INFO","time":"2022-10-13T23:41:44.858+0700","caller":"runtime/proc.go:250","func":"runtime.main","msg":"save redis success"}
+{"severity":"INFO","time":"2022-10-13T23:42:32.612+0700","caller":"runtime/proc.go:250","func":"runtime.main","msg":"save redis success"}
+{"severity":"ERROR","time":"2022-10-13T23:43:15.885+0700","caller":"go-viper-config-and-response/main.go:83","func":"main.main","msg":"remove redis error key cfg.RedisOption.MyOption.KeyFormat error: redis: nil"}
+{"severity":"INFO","time":"2022-10-13T23:43:58.747+0700","caller":"runtime/proc.go:250","func":"runtime.main","msg":"save redis success"}
