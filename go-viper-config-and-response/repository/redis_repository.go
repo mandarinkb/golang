@@ -18,8 +18,12 @@ func NewRedisRepository() RedisRepository {
 	}
 }
 
-func (r redisRepository) SaveRedis(ctx context.Context, key string, data interface{}, timeout time.Duration) error {
-	return database.RedisClientData.SaveDataOnRedis(ctx, key, data, timeout)
+func (r redisRepository) SaveRedisNoneExpiry(ctx context.Context, key string, src interface{}) error {
+	return database.RedisClientData.SaveDataOnRedisNoneExpiry(ctx, key, src)
+}
+
+func (r redisRepository) SaveRedisWithTTL(ctx context.Context, key string, src interface{}, timeout time.Duration) error {
+	return database.RedisClientData.SaveDataOnRedisWithTTL(ctx, key, src, timeout)
 }
 
 func (r redisRepository) GetRedis(ctx context.Context, key string, dst interface{}) error {
@@ -28,4 +32,20 @@ func (r redisRepository) GetRedis(ctx context.Context, key string, dst interface
 
 func (r redisRepository) RemoveRedis(ctx context.Context, key string) error {
 	return database.RedisClientData.RemoveDataOnRedis(ctx, key)
+}
+
+func (r redisRepository) PushRedis(ctx context.Context, key string, src interface{}) error {
+	return database.RedisClientData.PushDataOnRedis(ctx, key, src)
+}
+
+func (r redisRepository) PopRedis(ctx context.Context, key string, dst interface{}) error {
+	return database.RedisClientData.PopDataFromRedis(ctx, key, dst)
+}
+
+func (r redisRepository) ProducerRedis(ctx context.Context, key string, src interface{}) error {
+	return database.RedisClientData.PublishDataOnRedis(ctx, key, src)
+}
+
+func (r redisRepository) ConsumerRedis(ctx context.Context, key string, dst interface{}) error {
+	return database.RedisClientData.SubscribeDataFromRedis(ctx, key, dst)
 }

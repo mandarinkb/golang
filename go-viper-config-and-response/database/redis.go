@@ -32,12 +32,20 @@ func NewClient(cfg config.Redis) {
 	RedisClientData = RedisClient{redisClient: rd}
 }
 
-func (r RedisClient) SaveDataOnRedis(ctx context.Context, key string, data interface{}, timeout time.Duration) error {
-	js, err := json.Marshal(data)
+func (r RedisClient) SaveDataOnRedisNoneExpiry(ctx context.Context, key string, data interface{}) error {
+	return r.saveDataOnRedis(ctx, key, data, 0)
+}
+
+func (r RedisClient) SaveDataOnRedisWithTTL(ctx context.Context, key string, data interface{}, timeout time.Duration) error {
+	return r.saveDataOnRedis(ctx, key, data, timeout)
+}
+
+func (r RedisClient) saveDataOnRedis(ctx context.Context, key string, data interface{}, timeout time.Duration) error {
+	b, err := json.Marshal(data)
 	if err != nil {
 		return fmt.Errorf("unable to marshal data: %v", err)
 	}
-	return r.redisClient.Set(ctx, key, js, timeout).Err()
+	return r.redisClient.Set(ctx, key, b, timeout).Err()
 }
 
 func (r RedisClient) GetDataFromRedis(ctx context.Context, key string, dst interface{}) error {
@@ -58,9 +66,51 @@ func (r RedisClient) RemoveDataOnRedis(ctx context.Context, key string) error {
 	}
 	keys := ssc.Val()
 	for _, v := range keys {
-		if _, err := r.redisClient.Del(ctx, v).Result(); err != nil {
+		if err := r.redisClient.Del(ctx, v).Err(); err != nil {
 			return err
 		}
+	}
+	return nil
+}
+func (r RedisClient) PushDataOnRedis(ctx context.Context, key string, data interface{}) error {
+	b, err := json.Marshal(data)
+	if err != nil {
+		return fmt.Errorf("unable to marshal data: %v", err)
+	}
+	return r.redisClient.RPush(ctx, key, b).Err()
+}
+
+func (r RedisClient) PopDataFromRedis(ctx context.Context, key string, dst interface{}) error {
+	val, err := r.redisClient.RPop(ctx, key).Result()
+	if err != nil || err == redis.Nil {
+		return err
+	}
+	if err := json.Unmarshal([]byte(val), &dst); err != nil {
+		return fmt.Errorf("unable to unmarshal data: %v", err)
+	}
+	return nil
+}
+
+func (r RedisClient) PublishDataOnRedis(ctx context.Context, key string, data interface{}) error {
+	b, err := json.Marshal(data)
+	if err != nil {
+		return fmt.Errorf("unable to marshal data: %v", err)
+	}
+	return r.redisClient.RPush(ctx, key, b).Err()
+}
+
+func (r RedisClient) SubscribeDataFromRedis(ctx context.Context, key string, dst interface{}) error {
+	msg, err := r.redisClient.BLPop(ctx, config.C().RedisReadTimeout, key).Result()
+	if err != nil || err == redis.Nil {
+		return err
+	}
+	for _, v := range msg {
+		if v != key {
+			if err := json.Unmarshal([]byte(v), &dst); err != nil {
+				return fmt.Errorf("unable to unmarshal data: %v", err)
+			}
+		}
+
 	}
 	return nil
 }

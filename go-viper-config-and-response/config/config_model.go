@@ -3,10 +3,11 @@ package config
 import "time"
 
 type Root struct {
-	MariaDb     MariaDB      `mapstructure:"mariadb"`
-	Elastic     Elastic      `mapstructure:"elastic"`
-	Redis       Redis        `mapstructure:"redis"`
-	RedisOption RedisOptions `mapstructure:"redis_option"`
+	MariaDb          MariaDB       `mapstructure:"mariadb"`
+	Elastic          Elastic       `mapstructure:"elastic"`
+	Redis            Redis         `mapstructure:"redis"`
+	RedisOption      RedisOptions  `mapstructure:"redis_option"`
+	RedisReadTimeout time.Duration `mapstructure:"redis_read_timeout"`
 }
 
 type MariaDB struct {

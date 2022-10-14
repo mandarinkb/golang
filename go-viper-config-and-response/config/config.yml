@@ -29,3 +29,5 @@ redis_option:
   my_option:
     key_format: my_key
     ttl: 5m
+
+redis_read_timeout: 0s

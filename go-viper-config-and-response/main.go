@@ -46,7 +46,6 @@ func main() {
 	mainLog := logger.InitialLogger()
 	database.NewClient(cfg.Redis)
 	// mainLogger := logger.L().Named("main")
-
 	// for {
 	// 	mainLogger.Info("running success")
 	// 	time.Sleep(1 * time.Second)
@@ -64,7 +63,7 @@ func main() {
 		Thai:    "กขคง",
 		English: "abcd",
 	}
-	err := rd.SaveRedis(context.Background(), cfg.RedisOption.MyOption.KeyFormat, alphabet, cfg.RedisOption.MyOption.TTL)
+	err := rd.SaveRedisWithTTL(context.Background(), cfg.RedisOption.MyOption.KeyFormat, alphabet, cfg.RedisOption.MyOption.TTL)
 	if err != nil {
 		mainLog.Errorf("save redis error key %v error: %v", cfg.RedisOption.MyOption.KeyFormat, err)
 	}
@@ -78,8 +77,4 @@ func main() {
 	// js, _ := json.Marshal(rdData)
 	// fmt.Println(string(js))
 
-	// err := rd.RemoveRedis(context.Background(), cfg.RedisOption.MyOption.KeyFormat)
-	// if err != nil {
-	// 	mainLog.Errorf("remove redis error key %v error: %v", cfg.RedisOption.MyOption.KeyFormat, err)
-	// }
 }
