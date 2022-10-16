@@ -1,0 +1,33 @@
+mariadb:
+  maria_password: mandarinkb
+  driver_name: mysql
+  data_source_name: root:mandarinkb@tcp(mariadb)/WEB_SCRAPPING?charset=utf8
+
+elastic:
+  http_transport:
+    timeout: 5s
+    skip_verify_tls: true
+    dial_timeout: 30s
+    dial_keep_alive: 5s
+    max_idle_conns: 100
+    max_idle_conns_per_host: 100
+    idle_conn_timeout: 5s
+    tls_handshake_timeout: 5s
+    respose_header_timeout: 5s
+    expect_continue_timeout: 1s
+  # server_with_port: http://127.0.0.1:5209
+  server_with_port: http://elasticsearch:9200
+  index: test
+  type: _doc 
+
+redis:
+  addr: 127.0.0.1:6379
+  password: mandarinkb
+  db_index: 0
+
+redis_option:
+  my_option:
+    key_format: my_key
+    ttl: 5m
+
+redis_read_timeout: 0s
