@@ -1,0 +1,24 @@
+version: '3.5'
+
+services:
+  crontabui:
+    image: alseambusher/crontab-ui
+    hostname: crontabui
+    environment:
+      TZ: Asia/Bangkok
+      CRON_PATH: /var/spool/cron/crontabs
+      CRON_DB_PATH: /mnt/systems/crontabui/data
+    ports:
+      - 8989:8000
+    volumes:
+      - ./crontab/supervisord.conf:/etc/supervisord.conf
+        # Must be identical in host OS
+      - ./crontab/crontabs-data:/var/spool/cron/crontabs
+      - ./crontab/crontab-ui-data:/mnt/systems/crontabui/data
+networks: 
+  default: 
+    external: 
+      name: project-final  
+# volumes:
+#   crontabs-data:
+#   crontab-ui-data:
