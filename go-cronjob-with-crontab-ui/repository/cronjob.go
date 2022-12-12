@@ -9,10 +9,12 @@ var (
 )
 
 type CronJobData struct {
-	CronEntryID    cron.EntryID
-	CronIDRef      string
-	CronName       string
-	CronExpression string
+	CronEntryID      cron.EntryID
+	CronIDRef        string
+	CronName         string
+	CronExpression   string
+	CronStopped      bool
+	IsCronDataChange bool
 }
 
 type CronJobRepository interface {

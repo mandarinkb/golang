@@ -5,9 +5,12 @@ import (
 	"fmt"
 
 	"github.com/go-cronjob-with-crontab-ui/config"
+	"github.com/go-cronjob-with-crontab-ui/model"
 	"github.com/go-cronjob-with-crontab-ui/repository"
 	"github.com/go-cronjob-with-crontab-ui/utils"
 )
+
+var statusRunning string
 
 type cronJobService struct {
 	cronJobRepo repository.CronJobRepository
@@ -25,35 +28,73 @@ func (c *cronJobService) RunJobService(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-
+	isRunning := true
 	callback := func() {
+		if statusRunning != "pending" {
+			fileLines, _ := utils.ReadFile(file)
 
-		fileLines, _ := utils.ReadFile(file)
-		fmt.Println(fileLines)
+			syncChange(fileLines, repository.CronJobDetail)
 
-		if len(repository.CronJobDetail) > 0 {
-			// remove old cronjob
-			for i, v := range repository.CronJobDetail {
-				if v.CronName == "demo" {
-					c.cronJobRepo.RemoveJob(v.CronEntryID)
-					repository.CronJobDetail = utils.RemoveElement(repository.CronJobDetail, i)
+			if repository.CronJobDetail != nil {
+				isRunning = false
+				for i, inMemoryCron := range repository.CronJobDetail {
+					if inMemoryCron.IsCronDataChange {
+						switch inMemoryCron.CronIDRef {
+						case "6ASM7cWbuEL2WaPA": // demo
+							if inMemoryCron.CronStopped {
+								c.cronJobRepo.RemoveJob(inMemoryCron.CronEntryID)
+							} else {
+								c.cronJobRepo.RemoveJob(inMemoryCron.CronEntryID)
+								repository.CronJobDetail = utils.RemoveElement(repository.CronJobDetail, i)
+
+								id, _ := c.cronJobRepo.RunJob(inMemoryCron.CronExpression, start)
+								inMemoryCron.CronEntryID = id
+
+								repository.CronJobDetail = append(repository.CronJobDetail, inMemoryCron)
+							}
+						case "v0IqBRBhIGkzDyUM":
+							if inMemoryCron.CronStopped {
+								c.cronJobRepo.RemoveJob(inMemoryCron.CronEntryID)
+							} else {
+								c.cronJobRepo.RemoveJob(inMemoryCron.CronEntryID)
+								repository.CronJobDetail = utils.RemoveElement(repository.CronJobDetail, i)
+
+								id, _ := c.cronJobRepo.RunJob(inMemoryCron.CronExpression, start2)
+								inMemoryCron.CronEntryID = id
+
+								repository.CronJobDetail = append(repository.CronJobDetail, inMemoryCron)
+							}
+						}
+					}
+				}
+
+				fmt.Println("CronJobDetail : ", repository.CronJobDetail)
+			}
+			if isRunning {
+				fmt.Println("is first start")
+
+				for _, line := range fileLines {
+					cronData := repository.CronJobData{
+						CronIDRef:      line.Id,
+						CronName:       line.Name,
+						CronExpression: line.Schedule,
+						CronStopped:    line.Stopped,
+					}
+					if !line.Stopped {
+						if line.Name == "demo" {
+							id, _ := c.cronJobRepo.RunJob(line.Schedule, start)
+							cronData.CronEntryID = id
+						}
+						if line.Name == "2m" {
+							id, _ := c.cronJobRepo.RunJob(line.Schedule, start2)
+							cronData.CronEntryID = id
+						}
+					}
+					repository.CronJobDetail = append(repository.CronJobDetail, cronData)
 				}
 			}
-		}
 
-		for _, v := range fileLines {
-			if v.Name == "demo" {
-				id, _ := c.cronJobRepo.RunJob(v.Schedule, start)
-				cronData := repository.CronJobData{
-					CronEntryID:    id,
-					CronIDRef:      v.Id,
-					CronName:       v.Name,
-					CronExpression: v.Schedule,
-				}
-				repository.CronJobDetail = append(repository.CronJobDetail, cronData)
-			}
 		}
-		fmt.Println(repository.CronJobDetail)
 
 	}
 	// call function
@@ -67,5 +108,39 @@ func (c *cronJobService) RunJobService(ctx context.Context) error {
 }
 
 func start() {
+	statusRunning = "pending"
 	fmt.Println(utils.CurrentLocalDate(), "hello world")
+	statusRunning = ""
+}
+
+func start2() {
+	statusRunning = "pending"
+	fmt.Println(utils.CurrentLocalDate(), "================hello world2")
+	statusRunning = ""
+}
+
+func syncChange(fileLines []model.Crontab, cronDetail []repository.CronJobData) {
+	for _, line := range fileLines {
+		for i, inMemoryCron := range cronDetail {
+			if line.Id == inMemoryCron.CronIDRef {
+				repository.CronJobDetail = utils.RemoveElement(repository.CronJobDetail, i)
+				cronData := repository.CronJobData{
+					CronIDRef:        line.Id,
+					CronName:         line.Name,
+					CronExpression:   line.Schedule,
+					CronStopped:      line.Stopped,
+					IsCronDataChange: false,
+					CronEntryID:      inMemoryCron.CronEntryID, // original
+				}
+				fmt.Println("inMemoryCron.CronEntryID: ", inMemoryCron, " : ", inMemoryCron.CronEntryID)
+				// check cronexpression change
+				if line.Schedule != inMemoryCron.CronExpression || line.Stopped != inMemoryCron.CronStopped {
+					cronData.IsCronDataChange = true
+				}
+				repository.CronJobDetail = append(repository.CronJobDetail, cronData)
+				break
+			}
+		}
+	}
+
 }
