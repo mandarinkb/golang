@@ -1,3 +1,2 @@
-{"name":"demo","command":"","schedule":"0/1 * * * *","timestamp":"Sun Dec 11 2022 00:35:34 GMT+0700 (Indochina Time)","logging":"true","mailing":{},"saved":false,"_id":"6ASM7cWbuEL2WaPA","stopped":true}
-{"name":"3m","command":"","schedule":"0/3 * * * *","timestamp":"Sun Dec 11 2022 22:56:31 GMT+0700 (Indochina Time)","logging":"false","mailing":{},"saved":false,"_id":"GFRhaMbtv1Plh6TX","stopped":true}
-{"name":"2m","command":"","schedule":"0/3 * * * *","timestamp":"Mon Dec 12 2022 16:58:02 GMT+0700 (Indochina Time)","logging":"false","mailing":{},"saved":false,"_id":"v0IqBRBhIGkzDyUM","stopped":true}
+{"name":"service_one_6ASM7cWbuEL2WaPA","command":"","schedule":"25 17 1/1 * *","timestamp":"Sun Dec 18 2022 17:24:05 GMT+0700 (Indochina Time)","logging":"false","mailing":{},"saved":false,"_id":"6ASM7cWbuEL2WaPA"}
+{"name":"service_two_v0IqBRBhIGkzDyUM","command":"","schedule":"0/5 * * * *","timestamp":"Sun Dec 18 2022 11:05:18 GMT+0700 (Indochina Time)","logging":"false","mailing":{},"saved":false,"_id":"v0IqBRBhIGkzDyUM","stopped":false}

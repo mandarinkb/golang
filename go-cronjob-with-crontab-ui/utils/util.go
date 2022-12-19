@@ -2,17 +2,21 @@ package utils
 
 import (
 	"bufio"
+	"context"
 	"encoding/json"
 	"log"
 	"os"
 	"time"
 
 	"github.com/fsnotify/fsnotify"
+	"github.com/go-cronjob-with-crontab-ui/logger"
 	"github.com/go-cronjob-with-crontab-ui/model"
-	"github.com/go-cronjob-with-crontab-ui/repository"
+	"github.com/google/uuid"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
-func RemoveElement(s []repository.CronJobData, i int) []repository.CronJobData {
+func RemoveElement(s []model.CronJobData, i int) []model.CronJobData {
 	s[i] = s[len(s)-1]
 	s = s[:len(s)-1]
 	return s
@@ -131,4 +135,12 @@ func waitUntilFind(filename string) error {
 		break
 	}
 	return nil
+}
+
+func MakeContextCorrelationID(parent context.Context) context.Context {
+	uuID := uuid.New().String()
+	corrFields := []zapcore.Field{}
+	corrFields = append(corrFields, zap.Any("corr_id", uuID))
+	ctx := context.WithValue(parent, logger.LOG_FIELD_KEY, corrFields)
+	return ctx
 }

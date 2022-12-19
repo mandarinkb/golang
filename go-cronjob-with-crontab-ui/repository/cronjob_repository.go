@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"github.com/go-cronjob-with-crontab-ui/model"
 	"github.com/robfig/cron/v3"
 )
 
@@ -10,10 +11,10 @@ func NewCronJobRepository() CronJobRepository {
 	return &cronJobRepository{}
 }
 
-func (c *cronJobRepository) RunJob(cronExpression string, cmd func()) (cID cron.EntryID, err error) {
-	return Cron.AddFunc(cronExpression, cmd)
+func (c *cronJobRepository) RunJob(cronExpression string, cmd func()) (cron.EntryID, error) {
+	return model.Cron.AddFunc(cronExpression, cmd)
 }
 
 func (c *cronJobRepository) RemoveJob(id cron.EntryID) {
-	Cron.Remove(id)
+	model.Cron.Remove(id)
 }

@@ -1,5 +1,5 @@
 success:
   status: 200
-  code: ""
+  code: "00"
   en: "success"
-  th: ""
+  th: "ทำงานถูกต้อง"

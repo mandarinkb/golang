@@ -3,7 +3,7 @@ package model
 import "encoding/json"
 
 type Crontab struct {
-	Id        string `json:"_id"`
+	ID        string `json:"_id"`
 	Name      string `json:"name"`
 	Command   string `json:"command"`
 	Schedule  string `json:"schedule"`
