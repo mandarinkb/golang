@@ -1,0 +1,11 @@
+# install ubuntu mockgen
+sudo apt-get update
+sudo apt-get install mockgen
+
+# install lib
+go get github.com/golang/mock/gomock
+go get github.com/golang/mock/mockgen
+go get github.com/stretchr/testify/assert
+
+# before run mockgen cd to path domain (your interface)
+mockgen -source="account_domain.go" -destination="./mock/account_domain.go"
