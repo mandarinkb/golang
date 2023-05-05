@@ -1,0 +1,21 @@
+version: '3.5'
+services:  
+  redis:
+    image: redis:latest
+    container_name: docker-compose-redis
+    restart: always
+    command: redis-server --requirepass mandarinkb --appendonly yes
+    volumes: 
+      - redis-data:/data
+    ports:
+      - 6379:6379
+
+networks: 
+  default: 
+    external: 
+      name: project-final  
+
+volumes:
+  redis-data:
+
+# parth /var/lib/docker/volumes
