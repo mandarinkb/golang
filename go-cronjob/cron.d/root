@@ -1,0 +1,1 @@
+* * * * * /app/script/job_script.sh >> /app/log/job_script.log 2>&1
