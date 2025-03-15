@@ -1,0 +1,20 @@
+persistence:
+  defaultStore: mysql-default
+  visibilityStore: mysql-visibility
+  datastores:
+    mysql-default:
+      sql:
+        driver: "mysql"
+        host: "mysql"
+        port: 3306
+        user: "temporal"
+        password: "temporal"
+        database: "temporal"
+    mysql-visibility:
+      sql:
+        driver: "mysql"
+        host: "mysql"
+        port: 3306
+        user: "temporal"
+        password: "temporal"
+        database: "temporal_visibility"

@@ -1,0 +1,51 @@
+version: "3"
+
+services:
+  temporal-server:
+    image: "temporalio/server:latest"
+    container_name: temporal-server
+    environment:
+      - DB=mysql
+      - MYSQL_ADDRESS=mysql
+      - MYSQL_PORT=3306
+      - MYSQL_USER=temporal
+      - MYSQL_PASSWORD=temporal
+      - MYSQL_DB=temporal
+      - DYNAMIC_CONFIG_FILE_PATH=/etc/temporal/config/dynamicconfig/docker.yaml  # เชื่อมโยงไฟล์ dynamic config
+    ports:
+      - "7233:7233"
+    depends_on:
+      - mysql
+    networks:
+      - temporal_network
+    volumes:
+      - ./dynamic_config:/etc/temporal/config/dynamicconfig
+
+  mysql:
+    image: mysql:8
+    container_name: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=temporal
+      - MYSQL_USER=temporal
+      - MYSQL_PASSWORD=temporal
+    ports:
+      - "3306:3306"
+    networks:
+      - temporal_network
+
+  temporal-ui:
+    image: "temporalio/ui"
+    container_name: temporal-ui
+    ports:
+      - "9090:9090"
+    environment:
+      - TEMPORAL_CLI_ADDRESS=temporal-server:7233
+    depends_on:
+      - temporal-server
+    networks:
+      - temporal_network
+
+networks:
+  temporal_network:
+    driver: bridge
