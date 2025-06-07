@@ -1,0 +1,9 @@
+version: '3.5'
+services:  
+  redis:
+    image: redis:latest
+    container_name: docker-compose-redis
+    restart: always
+    command: redis-server --requirepass mandarinkb --appendonly yes
+    ports:
+      - 6379:6379
