@@ -31,6 +31,8 @@ func addCronJob(inputID, namme, schedule, command string) (string, error) {
 		return "", err
 	}
 	if err := util.RDB.HSet(util.CTX, "job_name-"+id, map[string]interface{}{
+		"id":       id,
+		"name":     namme,
 		"command":  command,
 		"schedule": schedule,
 	}).Err(); err != nil {
@@ -241,6 +243,77 @@ func main() {
 		}
 
 		return c.JSON(job)
+	})
+
+	//run now
+	app.Patch("/cron/:id/now", func(c *fiber.Ctx) error {
+		id := c.Params("id")
+		if id == "" {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"error": "ID is required",
+			})
+		}
+
+		// ตรวจสอบว่ามี job นี้อยู่จริงไหม
+		exists, err := util.RDB.HExists(util.CTX, "job_name-"+id, "schedule").Result()
+		if err != nil || !exists {
+			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+				"error": "Cron job not found",
+			})
+		}
+
+		// ตั้งเวลาใหม่เป็นเวลาปัจจุบัน
+		now := float64(time.Now().Unix())
+		if err := util.RDB.ZAdd(util.CTX, "cron_jobs", redis.Z{
+			Score:  now,
+			Member: id,
+		}).Err(); err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": "Failed to update time",
+			})
+		}
+
+		return c.JSON(fiber.Map{
+			"message": "Updated job next run time to now",
+			"id":      id,
+			"time":    now,
+		})
+	})
+
+	//pause job
+	app.Post("/cron/:id/pause", func(c *fiber.Ctx) error {
+		id := c.Params("id")
+		key := "job_name-" + id
+
+		exists, _ := util.RDB.Exists(util.CTX, key).Result()
+		if exists == 0 {
+			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Job not found"})
+		}
+
+		err := util.RDB.HSet(util.CTX, key, "paused", "true").Err()
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to pause job"})
+		}
+
+		return c.JSON(fiber.Map{"message": "Job paused", "id": id})
+	})
+
+	//resume job
+	app.Post("/cron/:id/resume", func(c *fiber.Ctx) error {
+		id := c.Params("id")
+		key := "job_name-" + id
+
+		exists, _ := util.RDB.Exists(util.CTX, key).Result()
+		if exists == 0 {
+			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Job not found"})
+		}
+
+		err := util.RDB.HSet(util.CTX, key, "paused", "false").Err()
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to resume job"})
+		}
+
+		return c.JSON(fiber.Map{"message": "Job resumed", "id": id})
 	})
 
 	fmt.Println("Starting server on port 3000")
