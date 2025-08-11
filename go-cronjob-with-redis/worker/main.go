@@ -2,87 +2,96 @@ package main
 
 import (
 	"context"
-	"fmt"
-	"log"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+
+	"log/slog"
 
 	"github.com/mandarinkb/go-cronjob-with-redis/util"
 	"github.com/redis/go-redis/v9"
 )
 
 func processCronJobs(ctx context.Context) {
-	ticker := time.NewTicker(2 * time.Second) // ตรวจสอบทุก 2 วินาที
+	pollInterval := 2 * time.Second
+	ticker := time.NewTicker(pollInterval)
 	defer ticker.Stop()
 
 	for {
 		select {
 		case <-ctx.Done():
-			log.Println("Stopping cron job processor gracefully...")
+			util.Logger.Info("worker stopping")
 			return
-
 		case <-ticker.C:
 			now := time.Now().Unix()
 
-			jobs, err := util.RDB.ZRangeByScore(util.CTX, "cron_jobs", &redis.ZRangeBy{
-				Min: "-inf", Max: fmt.Sprintf("%d", now),
-			}).Result()
-			if err != nil {
-				log.Println("[ERROR] Fetching jobs:", err)
+			// ZPopMin to claim one job (atomic)
+			res, err := util.RDB.ZPopMin(util.CTX, util.ZsetKey(), 1).Result()
+			if err != nil && err != redis.Nil {
+				util.Logger.Error("zpopmin failed", slog.Any("error", err))
+				continue
+			}
+			if len(res) == 0 {
 				continue
 			}
 
-			if len(jobs) == 0 {
-				log.Println("[INFO] No jobs to run at", time.Now().Format(time.RFC3339))
+			z := res[0]
+			// If score is in the future (possible if another worker pushed back), re-add
+			if int64(z.Score) > now {
+				// push it back
+				if err := util.RDB.ZAdd(util.CTX, util.ZsetKey(), redis.Z{Score: z.Score, Member: z.Member}).Err(); err != nil {
+					util.Logger.Error("requeue failed", slog.Any("error", err))
+				}
 				continue
 			}
 
-			for _, jobID := range jobs {
-				job, err := util.RDB.HGetAll(util.CTX, "job_name-"+jobID).Result()
-				if err != nil || len(job) == 0 {
-					log.Printf("[WARN] Job data missing for ID: %s\n", jobID)
-					continue
-				}
+			jobID := z.Member.(string)
+			job, err := util.RDB.HGetAll(util.CTX, util.JobKey(jobID)).Result()
+			if err != nil || len(job) == 0 {
+				util.Logger.Warn("job data missing", slog.String("id", jobID))
+				continue
+			}
 
-				if job["paused"] == "true" {
-					log.Printf("[SKIP] Job %s is paused.\n", jobID)
-					continue
-				}
+			if job["paused"] == "true" {
+				util.Logger.Info("job paused - skipping", slog.String("id", jobID))
+				// skip but do not schedule next run -> we might want to schedule in future; for now re-add to zset with same score+60s
+				// choose to requeue with +60s to avoid busy-loop
+				retryAt := time.Now().Add(60 * time.Second).Unix()
+				util.RDB.ZAdd(util.CTX, util.ZsetKey(), redis.Z{Score: float64(retryAt), Member: jobID})
+				continue
+			}
 
-				log.Printf("[RUN] ID: %s | Command: %s\n", jobID, job["command"])
+			util.Logger.Info("executing job", slog.String("id", jobID), slog.String("cmd", job["command"]))
 
-				nextRun := util.GetNextRun(job["schedule"])
-				util.RDB.ZRem(util.CTX, "cron_jobs", jobID)
-				util.RDB.ZAdd(util.CTX, "cron_jobs", redis.Z{
-					Score:  float64(nextRun),
-					Member: jobID,
-				})
+			// TODO: run job command properly (exec.Command with timeout/context)
+			// Example placeholder: simulate execution
+			time.Sleep(100 * time.Millisecond)
 
-				log.Printf("[SCHEDULED] Next run at: %s\n", time.Unix(nextRun, 0).Format(time.RFC3339))
+			// compute next run and schedule it
+			nextRun := util.GetNextRun(job["schedule"])
+			if err := util.RDB.ZAdd(util.CTX, util.ZsetKey(), redis.Z{Score: float64(nextRun), Member: jobID}).Err(); err != nil {
+				util.Logger.Error("schedule next failed", slog.Any("error", err), slog.String("id", jobID))
+			} else {
+				util.Logger.Info("scheduled next run", slog.String("id", jobID),
+					slog.String("next", time.Unix(nextRun, 0).Format(time.RFC3339)))
 			}
 		}
 	}
 }
 
 func main() {
-	log.Println("Starting cron job worker...")
+	util.Init()
 
 	ctx, cancel := context.WithCancel(context.Background())
-
-	// ตั้งค่าให้กด Ctrl+C เพื่อ stop worker
-	// สร้าง channel เพื่อรอรับสัญญาณจาก OS เช่น Ctrl+C (SIGINT) หรือ docker stop (SIGTERM)
-	sigs := make(chan os.Signal, 1)
-	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
-
-	// เมื่อได้รับสัญญาณ → เรียก cancel() เพื่อแจ้งให้ processCronJobs() หยุดทำงาน
+	signals := make(chan os.Signal, 1)
+	signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM)
 	go func() {
-		<-sigs
-		log.Println("Received stop signal")
+		<-signals
+		util.Logger.Info("received stop signal")
 		cancel()
 	}()
 
-	// เรียกให้ worker ทำงาน โดยส่ง context ที่เราสามารถ cancel ได้
+	util.Logger.Info("worker started")
 	processCronJobs(ctx)
 }

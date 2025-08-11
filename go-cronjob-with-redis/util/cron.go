@@ -2,17 +2,19 @@ package util
 
 import (
 	"log"
+	"log/slog"
 	"time"
 
-	"github.com/robfig/cron"
+	"github.com/robfig/cron/v3"
 )
 
-// ใช้ Cron Parser คำนวณเวลาถัดไป
+// GetNextRun คำนวณเวลาถัดไปจาก schedule
 func GetNextRun(schedule string) int64 {
 	parser := cron.NewParser(cron.Minute | cron.Hour | cron.Dom | cron.Month | cron.Dow)
 	expr, err := parser.Parse(schedule)
 	if err != nil {
-		log.Fatal("Invalid cron expression:", err)
+		Logger.Error("Invalid cron expression", slog.String("schedule", schedule), slog.Any("error", err))
+		log.Fatal(err)
 	}
 	return expr.Next(time.Now()).Unix()
 }
