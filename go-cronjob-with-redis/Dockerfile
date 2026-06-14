@@ -1,26 +1,31 @@
-FROM golang:1.20-buster AS build
-WORKDIR /app
-COPY . ./
-RUN go mod download
-RUN go build -o /bin/app
+# syntax=docker/dockerfile:1
 
-FROM debian:buster-slim
-COPY --from=build /bin/app /bin
+# ---- Build stage ----
+FROM golang:1.23-bookworm AS build
+
+WORKDIR /app
+COPY go.mod go.sum ./
+RUN go mod download
+
+COPY . .
+RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -ldflags="-s -w" -o /bin/api .
+RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -ldflags="-s -w" -o /bin/worker ./worker
+
+# ---- Runtime stage ----
+FROM debian:bookworm-slim
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends bash ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=build /bin/api    /bin/api
+COPY --from=build /bin/worker /bin/worker
+COPY script/                  /app/script/
+
+RUN chmod +x /app/script/*
+
 EXPOSE 3000
 
-# install cron
-RUN apt-get update \
-    && apt-get -y install cron 
-# Copy the cron file to the container
-COPY cron.d/root /etc/cron.d/root
-COPY script/* /app/script/
-COPY log/* /app/log/
-COPY job/* /app/job/
-# Set permission
-RUN chmod 755 /etc/cron.d/* \
-    && chmod 755 /app/script/* \
-    && chmod 755 /app/log/* \
-    && chmod 755 /app/job/*
-# Apply the cron job
-RUN crontab /etc/cron.d/root
-CMD service cron start && /bin/app
+# Default: run API server
+# สามารถ override ได้ใน docker-compose ด้วย command: ["/bin/worker"]
+CMD ["/bin/api"]

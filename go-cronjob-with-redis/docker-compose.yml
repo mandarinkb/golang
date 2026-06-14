@@ -1,9 +1,47 @@
-version: '3.5'
-services:  
+version: '3.8'
+
+services:
   redis:
-    image: redis:latest
-    container_name: docker-compose-redis
+    image: redis:7-alpine
+    container_name: cronjob-redis
     restart: always
     command: redis-server --requirepass mandarinkb --appendonly yes
     ports:
-      - 6379:6379
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "mandarinkb", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  api:
+    build: .
+    container_name: cronjob-api
+    command: ["/bin/api"]
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - REDIS_ADDR=redis:6379
+      - REDIS_PASSWORD=mandarinkb
+      - API_PORT=3000
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  worker:
+    build: .
+    container_name: cronjob-worker
+    command: ["/bin/worker"]
+    restart: always
+    environment:
+      - REDIS_ADDR=redis:6379
+      - REDIS_PASSWORD=mandarinkb
+    depends_on:
+      redis:
+        condition: service_healthy
+
+volumes:
+  redis_data:
